@@ -1,17 +1,5 @@
 <?php
 
-/*
-    Resources:
-        https://hesweb.dev/files/e2p1-examples/war/
-        https://www.php.net/manual/en/control-structures.switch.php
-        https://www.w3schools.com/php/func_array_push.asp
-        http://www.hackingwithphp.com/5/6/10/randomising-your-array
-        https://www.php.net/manual/en/function.array-keys.php
-        https://www.w3schools.com/php/func_array.asp
-        https://stackoverflow.com/questions/7113231/how-to-iterate-over-an-array-of-arrays
-        https://www.alt-codes.net/suit-cards.php
-*/
-
 # creates a deck of 52 cards with numeric values and unicode symbol for suit but delimited by space
 function createDeckOfCards()
 {

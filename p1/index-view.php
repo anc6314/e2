@@ -48,6 +48,7 @@
         <li>Whoevers card is highest wins that round and keeps both cards.</li>
         <li>If the two cards are of the same value, it’s a tie and those cards are discarded.</li>
         <li>The player who ends up with 0 cards is the loser.</li>
+        <li>Note: Aces are always higher than Kings in this game</li>
     </ul>
 
     <h2>
