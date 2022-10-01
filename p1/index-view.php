@@ -69,19 +69,19 @@
             <th>Player 1 cards left</th>
             <th>Player 2 cards left</th>
         </tr>
-        <?php
-        foreach ($results as $round) {
-            echo "<tr>";
-            foreach ($round as $key => $value) {
-                if ($key == "Player 1 card" || $key == "Player 2 card") {
-                    echo "<td><span class=\"card\">" . $value . "</span></td>";
-                } else {
-                    echo "<td>" . $value . "</td>";
-                }
-            }
-            echo "</tr>";
-        }
-        ?>
+        <?php foreach ($results as $round) { ?>
+            <tr>
+                <?php foreach ($round as $key => $value) { ?>
+                    <td>
+                    <?php if ($key == "Player 1 card" || $key == "Player 2 card") {
+                        echo "<span class=\"card\">" . $value . "</span>";
+                    } else {
+                        echo $value;
+                    }
+                } ?>
+                    </td>
+            </tr>
+        <?php } ?>
     </table>
 
 </body>
