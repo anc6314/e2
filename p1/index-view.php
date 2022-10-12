@@ -13,10 +13,6 @@
             padding: 5px;
         }
 
-        .green {
-            color: green;
-        }
-
         th,
         td {
             border-bottom: 1px solid #ddd;
