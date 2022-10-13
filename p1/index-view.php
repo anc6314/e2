@@ -6,27 +6,7 @@
     <title>Project 1 - War (card game) Simulator</title>
     <meta charset='utf-8'>
     <link href=data:, rel=icon>
-    <style>
-        .card {
-            border: 1px solid black;
-            display: inline-block;
-            padding: 5px;
-        }
-
-        th,
-        td {
-            border-bottom: 1px solid #ddd;
-            padding: 10px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        td {
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
