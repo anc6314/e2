@@ -46,13 +46,11 @@
             <tr>
                 <?php foreach ($round as $key => $value) { ?>
                     <td>
-                    <?php if ($key == "Player 1 card" || $key == "Player 2 card") {
-                        echo "<span class=\"card\">" . $value . "</span>";
-                    } else {
-                        echo $value;
-                    }
-                } ?>
+                        <span class= <?php echo $class; ?> >
+                            <?php echo $value; ?>
+                        </span>
                     </td>
+                <?php } ?>
             </tr>
         <?php } ?>
     </table>
