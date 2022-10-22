@@ -12,8 +12,9 @@
 + <https://stackoverflow.com/questions/72513746/how-to-iterate-over-enum>
 + <https://www.cloudbooklet.com/how-to-install-or-upgrade-php-8-1-on-ubuntu-20-04/>
 + <https://github.com/richiecarey/e2/blob/main/p1/index.php>
++ <https://tekeye.uk/playing_cards/svg-playing-cards>
++ <https://www.bestcssbuttongenerator.com/>
 
 ## Notes for instructor
-+ My version is a little different from your example in that Aces are the highest card.
 + For project 2, I've modified this game to give the player the choice to play the top card, or reshuffle their deck to get a new card.
 + However, they can only get a new card one time.

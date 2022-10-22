@@ -4,6 +4,6 @@ enum Suit: string
 {
     case Hearts   = "♥";
     case Diamonds = "♦";
-    case Clubs    = "♧";
-    case Spades   = "♤";
+    case Clubs    = "♣";
+    case Spades   = "♠";
 }
