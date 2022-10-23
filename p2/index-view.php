@@ -121,7 +121,13 @@
                     <?php } else { ?>
 
                     <div class="alert alert-primary" role="alert">
+
+                        <?php if ($winnerGame != "Tie") { ?>
                         Game over, <?php echo strtolower($winnerGame) ?> won the game!
+                        <?php } else { ?>
+                        The game ended in a tie!
+                        <?php } ?>
+
                     </div>
                     <?php } ?>
 
