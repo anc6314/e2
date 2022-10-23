@@ -70,7 +70,11 @@
                     </div>
                     <br />
                     <div class="alert alert-<?php echo $_SESSION['winnerClass']; ?> ">
+                        <?php if ($winner != "Tie") { ?>
                         <?php echo $winner; ?> won the last round!
+                        <?php } else { ?>
+                        The last round was a tie!
+                        <?php } ?>
                     </div>
 
                     <?php } ?>
@@ -184,14 +188,14 @@
             <div class="col-8">
                 <h2>History</h2>
                 <table class="table table-hover">
-                    <tr>
+                    <tr class="table-primary">
                         <th scope="col">Round #</th>
-                        <th scope="col">Player 1 card</th>
-                        <th scope="col">Computer card</th>
+                        <th scope="col">Player's card</th>
+                        <th scope="col">Computer's card</th>
                         <th scope="col">Winner</th>
                         <th scope="col">Choice</th>
-                        <th scope="col">Player 1 cards left</th>
-                        <th scope="col">Player 2 cards left</th>
+                        <th scope="col">Player cards left</th>
+                        <th scope="col">Computer cards left</th>
                     </tr>
                     <?php foreach ($results as $result) { ?>
                     <tr class="table-<?php echo $result['Winner class']; ?> black">
