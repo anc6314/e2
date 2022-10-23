@@ -1,3 +1,14 @@
+.background {
+    background-image: url('/images/background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.body {
+    color: white;
+}
+
 .Blackcard {
     border: 1px solid black;
     display: inline-block;
@@ -19,6 +30,10 @@
     color: red;
 }
 
+.black {
+    color: black;
+}
+
 th,
 td {
     border-bottom: 1px solid #ddd;
@@ -31,50 +46,4 @@ tr:nth-child(even) {
 
 td {
     text-align: center;
-}
-
-.GreenButton {
-    background-color: #44c767;
-    border-radius: 28px;
-    border: 1px solid #18ab29;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    font-family: Arial;
-    font-size: 17px;
-    padding: 16px 31px;
-    text-decoration: none;
-    text-shadow: 0px 1px 0px #2f6627;
-}
-
-.GreenButton:hover {
-    background-color: #5cbf2a;
-}
-
-.GreenButton:active {
-    position: relative;
-    top: 1px;
-}
-
-.RedButton {
-    background-color: #fe1a00;
-    border-radius: 28px;
-    border: 1px solid #d83526;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    font-family: Arial;
-    font-size: 17px;
-    padding: 16px 31px;
-    text-decoration: none;
-    text-shadow: 0px 1px 0px #b23e35;
-}
-
-.RedButton:hover {
-    background-color: #ce0100;
-}
-
-.RedButton:active {
-    position: relative;
-    top: 1px;
 }

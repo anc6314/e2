@@ -32,7 +32,7 @@ if ($choice == 'reset') {
 
     # Card with highest value wins that round and keeps both cards.
     if ($player1_card->value > $computer_card->value) {
-        $winner = "Player 1";
+        $winner = "You";
         $wins++;
 
         # take card from other player and put at end of deck
@@ -44,6 +44,7 @@ if ($choice == 'reset') {
         array_shift($player1_cards);
     } elseif ($computer_card->value > $player1_card->value) {
         $winner = "Computer";
+        $losses++;
         # take card from other player and put at end of deck
         $card = array_shift($player1_cards);
         array_push($computer_cards, $card);
@@ -59,6 +60,14 @@ if ($choice == 'reset') {
         array_shift($computer_cards);
     }
 
+    if ($winner == "You") {
+        $winnerClass =  "success";
+    } else if ($winner == "Computer") {
+        $winnerClass =  "danger";
+    } else if ($winner == "Tie") {
+        $winnerClass =  "warning";
+    }
+
     # save output for display by the view
     $result = array(
         "Round"                 => $round,
@@ -67,7 +76,7 @@ if ($choice == 'reset') {
         "Computer card"         => $computer_card->getName(),
         "Computer card class"   => $computer_card->getClassName(),
         "Winner"                => $winner,
-        "Winner class"          => ($winner == "Player 1") ? "green" : "red",
+        "Winner class"          => $winnerClass,
         "Player 1 cards left"   => (int) count($player1_cards),
         "Computer cards left"   => (int) count($computer_cards),
         "Choice"                => $choice
@@ -76,13 +85,27 @@ if ($choice == 'reset') {
     array_unshift($results, $result); # the history should be kept with the latest round on top - who like scrolling!
     $round++;
 
+    # There is an edge case where the last round is a tie (and one user is out of cards after)
+    # e.g. tie isn't an acceptiable outcome for the game but is for a round.
+    # For that reason, we can't simply use the last $winner value in the view 
+
+    if (count($computer_cards) == 0 || count($player1_cards) == 0) {
+        if (count($computer_cards) == 0) {
+            $winnerGame = "You";
+        } else if (count($player1_cards) == 0) {
+            $winnerGame = "Computer";
+        }
+    }
+
     # save data to session
     $_SESSION['round']          = $round;
     $_SESSION['results']        = $results;
     $_SESSION['winner']         = $winner;
-    $_SESSION['player1_cards']  = $player1_cards;
-    $_SESSION['computer_cards'] = $computer_cards;
-    $_SESSION['totalWins']      = $wins;
+    $_SESSION['winnerClass']    = $winnerClass;
+    $_SESSION['winnerGame']     = $winnerGame; # camel case used for vars
+    $_SESSION['player1_cards']  = $player1_cards; #underscore used because this is array of objects
+    $_SESSION['computer_cards'] = $computer_cards; #underscore used because this is array of objects
+    $_SESSION['totalWins']      = $wins; # camel case used for vars
     $_SESSION['totalTies']      = $ties;
     $_SESSION['totalLoses']     = $losses;
 }

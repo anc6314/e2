@@ -14,6 +14,9 @@
 + <https://github.com/richiecarey/e2/blob/main/p1/index.php>
 + <https://tekeye.uk/playing_cards/svg-playing-cards>
 + <https://www.bestcssbuttongenerator.com/>
++ <https://stackoverflow.com/questions/2795177/how-to-convert-boolean-to-string>
++ <https://www.pexels.com/photo/croupier-with-cards-in-casino-6664126/>
++ <https://kinsta.com/blog/html-font-color/>
 
 ## Notes for instructor
 + For project 2, I've modified this game to give the player the choice to play the top card, or reshuffle their deck to get a new card.
