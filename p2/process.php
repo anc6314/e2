@@ -90,9 +90,9 @@ if ($choice == 'reset') {
     # For that reason, we can't simply use the last $winner value in the view 
 
     if (count($computer_cards) == 0 || count($player1_cards) == 0) {
-        if (count($computer_cards) == 0) {
+        if (empty($computer_cards)) {
             $winnerGame = "You";
-        } else if (count($player1_cards) == 0) {
+        } else if (empty($player1_cards)) {
             $winnerGame = "Computer";
         }
     }

@@ -80,7 +80,7 @@
             </div>
             <div class="col">
                 <table>
-                    <?php if (!isset($winner_game)) { ?>
+                    <?php if (!isset($winnerGame)) { ?>
                     <tr>
                         <th>Your Card</th>
                         <th>Computer's Card</th>
@@ -114,13 +114,18 @@
 
                             </td>
                     </form>
+                    <?php } else { ?>
+
+                    <div class="alert alert-primary" role="alert">
+                        Game over, <?php echo $winnerGame ?> won the game!
+                    </div>
                     <?php } ?>
 
                     <form method='POST' action='process.php'>
                         <td>
                             <input type='hidden' id='reset' name='choice' value='reset'>
                             <button class="btn btn-danger" type='submit'>
-                                <?php echo (isset($winner_game)) ? "New Game" : "Reset" ?>
+                                <?php echo (isset($winnerGame)) ? "New Game" : "Reset" ?>
                             </button>
                         </td>
                     </form>
