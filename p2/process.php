@@ -32,7 +32,7 @@ if ($choice == 'reset') {
 
     # Card with highest value wins that round and keeps both cards.
     if ($player1_card->value > $computer_card->value) {
-        $winner = "You";
+        $winner = "you";
         $wins++;
 
         # take card from other player and put at end of deck
@@ -43,7 +43,7 @@ if ($choice == 'reset') {
         array_push($player1_cards, $player1_cards[0]);
         array_shift($player1_cards);
     } elseif ($computer_card->value > $player1_card->value) {
-        $winner = "Computer";
+        $winner = "computer";
         $losses++;
         # take card from other player and put at end of deck
         $card = array_shift($player1_cards);
@@ -60,9 +60,9 @@ if ($choice == 'reset') {
         array_shift($computer_cards);
     }
 
-    if ($winner == "You") {
+    if ($winner == "you") {
         $winnerClass =  "success";
-    } else if ($winner == "Computer") {
+    } else if ($winner == "computer") {
         $winnerClass =  "danger";
     } else if ($winner == "Tie") {
         $winnerClass =  "warning";
