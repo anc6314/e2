@@ -48,7 +48,7 @@
                             style="width: <?php echo $wins / ($round - 1) * 100; ?>%;"
                             aria-valuenow="<?php echo $wins / ($round - 1) * 100; ?>" aria-valuemin="0"
                             aria-valuemax="100">
-                            <?php echo $wins / ($round - 1) * 100; ?>%</div>
+                            <?php echo round($wins / ($round - 1) * 100, 1); ?>%</div>
                     </div>
 
                     Losses: <?php echo $losses; ?>
@@ -57,7 +57,7 @@
                             style="width: <?php echo $losses / ($round - 1) * 100; ?>%;"
                             aria-valuenow="<?php echo $losses / ($round - 1) * 100; ?>" aria-valuemin="0"
                             aria-valuemax="100">
-                            <?php echo $losses / ($round - 1) * 100; ?>%</div>
+                            <?php echo round($losses / ($round - 1) * 100, 1); ?>%</div>
                     </div>
 
                     Ties: <?php echo $ties; ?>
@@ -66,7 +66,7 @@
                             style="width: <?php echo $ties / ($round - 1) * 100; ?>%;"
                             aria-valuenow="<?php echo $ties / ($round - 1) * 100; ?>" aria-valuemin="0"
                             aria-valuemax="100">
-                            <?php echo $ties / ($round - 1) * 100; ?>%</div>
+                            <?php echo round($ties / ($round - 1) * 100, 1); ?>%</div>
                     </div>
                     <br />
                     <div class="alert alert-<?php echo $_SESSION['winnerClass']; ?> ">
