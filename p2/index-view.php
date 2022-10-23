@@ -80,7 +80,7 @@
             </div>
             <div class="col">
                 <table>
-                    <?php if (!isset($winnerGame)) { ?>
+                    <?php if ($winnerGame == "") { ?>
                     <tr>
                         <th>Your Card</th>
                         <th>Computer's Card</th>
