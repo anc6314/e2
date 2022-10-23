@@ -121,7 +121,7 @@
                     <?php } else { ?>
 
                     <div class="alert alert-primary" role="alert">
-                        Game over, <?php echo $winnerGame ?> won the game!
+                        Game over, <?php echo strtolower($winnerGame) ?> won the game!
                     </div>
                     <?php } ?>
 
@@ -144,10 +144,11 @@
                             <h5 class="mb-0">
                                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapseInstructions"
                                     aria-expanded="false" aria-controls="collapseInstructions">
+                                    <h2>
+                                        Instructions:
+                                    </h2>
                                 </button>
-                                <h2>
-                                    Instructions:
-                                </h2>
+
                                 <div id="collapseInstructions" class="collapse show" aria-labelledby="headingOne"
                                     data-parent="#accordion">
                                     <div class="card-body">
