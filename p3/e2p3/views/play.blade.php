@@ -99,7 +99,6 @@
                             <tr>
                                 <td>
                                     <button class="btn btn-success" type='submit'>Play</button>
-
                                 </td>
                         </form>
                     @else
@@ -118,7 +117,11 @@
                         <td>
                             <input type='hidden' id='reset' name='choice' value='reset'>
                             <button class="btn btn-danger" type='submit'>
-                                <?php echo isset($winnerGame) ? 'New Game' : 'Reset'; ?>
+                                @if ($winnerGame = '')
+                                    New Game
+                                @else
+                                    Reset
+                                @endif
                             </button>
                         </td>
                     </form>
