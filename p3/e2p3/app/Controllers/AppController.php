@@ -17,9 +17,10 @@ class AppController extends Controller
     public function play()
     {
         $winnerClass        = "";
+        $round              = $this->app->sessionGet('round');
 
         # Is this the first round?
-        if (!isset($_SESSION['round'])) {
+        if (is_null($round)) {
             # Yes, so let's setup our default vars
 
             $results = array(); # this will be an array of arrays that will used to output in view
@@ -35,13 +36,13 @@ class AppController extends Controller
             $losspercent    = 0;
             $tiepercent     = 0;
 
-            $_SESSION['round']              = $round;
-            $_SESSION['totalWins']          = $wins;
-            $_SESSION['totalTies']          = $ties;
-            $_SESSION['totalLoses']         = $losses;
-            $_SESSION['results']            = $results;
-            $_SESSION['winner']             = $winner;
-            $_SESSION['winnerGame']         = $winnerGame;
+            $this->app->sessionSet('round', $round);
+            $this->app->sessionSet('totalWins', $wins);
+            $this->app->sessionSet('totalTies', $ties);
+            $this->app->sessionSet('totalLoses', $losses);
+            $this->app->sessionSet('results', $results);
+            $this->app->sessionSet('winner', $winner);
+            $this->app->sessionSet('winnerGame', $winnerGame);
 
             # now let's setup the game of war!
             $deck = new Deck(true); # get a shuffled deck of cards
@@ -53,20 +54,20 @@ class AppController extends Controller
             }
 
             # save our card data for the game
-            $_SESSION['player1_cards']  = $player1_cards;
-            $_SESSION['computer_cards'] = $computer_cards;
+            $this->app->sessionSet('player1_cards',  $player1_cards);
+            $this->app->sessionSet('computer_cards', $computer_cards);
         } else {
             # Nope, load the history data
-            $results        = $_SESSION['results'];
-            $wins           = $_SESSION['totalWins'];
-            $ties           = $_SESSION['totalTies'];
-            $losses         = $_SESSION['totalLoses'];
-            $round          = $_SESSION['round'];
-            $winner         = $_SESSION['winner'];
-            $winnerGame     = $_SESSION['winnerGame'];
+            $results        = $this->app->sessionGet('results');
+            $wins           = $this->app->sessionGet('totalWins');
+            $ties           = $this->app->sessionGet('totalTies');
+            $losses         = $this->app->sessionGet('totalLoses');
+            $round          = $this->app->sessionGet('round');
+            $winner         = $this->app->sessionGet('winner');
+            $winnerGame     = $this->app->sessionGet('winnerGame');
 
-            $player1_cards  = $_SESSION['player1_cards'];
-            $computer_cards = $_SESSION['computer_cards'];
+            $player1_cards  = $this->app->sessionGet('player1_cards');
+            $computer_cards = $this->app->sessionGet('computer_cards');
 
             # calc stats
             $losses         = $round - ($wins + $ties);
@@ -125,14 +126,14 @@ class AppController extends Controller
         if ($choice == 'reset') {
             session_destroy();
         } else {
-            $round          = $_SESSION['round'];
-            $results        = $_SESSION['results'];
-            $winner         = $_SESSION['winner'];
-            $player1_cards  = $_SESSION['player1_cards'];
-            $computer_cards = $_SESSION['computer_cards'];
-            $wins           = $_SESSION['totalWins'];
-            $ties           = $_SESSION['totalTies'];
-            $losses         = $_SESSION['totalLoses'];
+            $round          = $this->app->sessionGet('round');
+            $results        = $this->app->sessionGet('results');
+            $winner         = $this->app->sessionGet('winner');
+            $player1_cards  = $this->app->sessionGet('player1_cards');
+            $computer_cards = $this->app->sessionGet('computer_cards');
+            $wins           = $this->app->sessionGet('totalWins');
+            $ties           = $this->app->sessionGet('totalTies');
+            $losses         = $this->app->sessionGet('totalLoses');
 
             # --------------------------
             if ($choice == 'random') {
@@ -219,16 +220,16 @@ class AppController extends Controller
         $tiepercent     = round(($ties / $round) * 100, 2);
 
         # save data to session
-        $_SESSION['round']          = $round;
-        $_SESSION['results']        = $results;
-        $_SESSION['winner']         = $winner;
-        $_SESSION['winnerClass']    = $winnerClass;
-        $_SESSION['winnerGame']     = $winnerGame; # camel case used for vars
-        $_SESSION['player1_cards']  = $player1_cards; #underscore used because this is array of objects
-        $_SESSION['computer_cards'] = $computer_cards; #underscore used because this is array of objects
-        $_SESSION['totalWins']      = $wins; # camel case used for vars
-        $_SESSION['totalTies']      = $ties;
-        $_SESSION['totalLoses']     = $losses;
+        $this->app->sessionSet('round',           $round);
+        $this->app->sessionSet('results',         $results);
+        $this->app->sessionSet('winner',          $winner);
+        $this->app->sessionSet('winnerClass',     $winnerClass);
+        $this->app->sessionSet('winnerGame',      $winnerGame); # camel case used for vars
+        $this->app->sessionSet('player1_cards',   $player1_cards); #underscore used because this is array of objects
+        $this->app->sessionSet('computer_cards',  $computer_cards); #underscore used because this is array of objects
+        $this->app->sessionSet('totalWins',       $wins); # camel case used for vars
+        $this->app->sessionSet('totalTies',       $ties);
+        $this->app->sessionSet('totalLoses',      $losses);
 
 
         $data = [
