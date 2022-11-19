@@ -19,6 +19,7 @@
             </div>
         </div>
 
+        {{-- Game row  --}}
         <div class="row">
             {{-- Stats / left col --}}
             <div class="col">
@@ -175,5 +176,52 @@
                 </div>
             </div>
         </div>
+
+        {{-- History row  --}}
+        @if ($round != 1)
+            <div class="row">
+                <div class="col">
+                </div>
+                <div class="col-8">
+                    <h2>History</h2>
+                    <table class="table table-hover">
+                        <tr class="table-primary">
+                            <th scope="col">Round #</th>
+                            <th scope="col">Player's card</th>
+                            <th scope="col">Computer's card</th>
+                            <th scope="col">Winner</th>
+                            <th scope="col">Choice</th>
+                            <th scope="col">Player cards left</th>
+                            <th scope="col">Computer cards left</th>
+                        </tr>
+                        @foreach ($results as $result)
+                            <tr class="table-{{ $result['Winner class'] }} black">
+                                <td> {{ $result['Round'] }}</td>
+                                <td>
+                                    <span class={{ $result['Player 1 card class'] }}>
+                                        {{ $result['Player 1 card'] }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class={{ $result['Computer card class'] }}>
+                                        {{ $result['Computer card'] }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {{ $result['Winner'] }}
+                                </td>
+                                <td> {{ $result['Choice'] }} </td>
+                                <td> {{ $result['Player 1 cards left'] }} </td>
+                                <td> {{ $result['Computer cards left'] }} </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+                <div class="col">
+                </div>
+        @endif
+
+    </div>
+
     </div>
 @endsection
