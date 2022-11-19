@@ -1,0 +1,49 @@
+.background {
+    background-image: url('/images/background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.body {
+    color: white;
+}
+
+.Blackcard {
+    border: 1px solid black;
+    display: inline-block;
+    padding: 5px;
+}
+
+.Redcard {
+    border: 1px solid red;
+    display: inline-block;
+    padding: 5px;
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+
+.black {
+    color: black;
+}
+
+th,
+td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+td {
+    text-align: center;
+}
