@@ -111,15 +111,15 @@ class AppController extends Controller
 
     public function process()
     {
-        $wins       = 0;
-        $ties       = 0;
-        $losses     = 0;
-        $round      = 1;
-        $winner     = "";
-        $winnerGame = "";
-        $winnerClass = "";
-        $player1CardPath = "/images/spades_jack.png";
-        $computerCardPath = "/images/clubs_6.png";
+        $wins               = 0;
+        $ties               = 0;
+        $losses             = 0;
+        $round              = 1;
+        $winner             = "";
+        $winnerGame         = "";
+        $winnerClass        = "";
+        $player1CardPath    = "";
+        $computerCardPath   = "";
 
         $choice = $this->app->input('choice', '');
 
