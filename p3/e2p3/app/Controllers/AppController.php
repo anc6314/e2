@@ -100,7 +100,8 @@ class AppController extends Controller
             'losspercent'       => $losspercent,
             'tiepercent'        => $tiepercent,
             'player1CardPath'   => $player1CardPath,
-            'computerCardPath'   => $computerCardPath,
+            'computerCardPath'  => $computerCardPath,
+            'results'           => $results,
 
         ];
 
@@ -244,7 +245,8 @@ class AppController extends Controller
             'losspercent'       => $losspercent,
             'tiepercent'        => $tiepercent,
             'player1CardPath'   => $player1CardPath,
-            'computerCardPath'   => $computerCardPath,
+            'computerCardPath'  => $computerCardPath,
+            'results'           => $results,
 
         ];
 
