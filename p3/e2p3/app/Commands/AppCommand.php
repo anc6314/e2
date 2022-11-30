@@ -46,11 +46,7 @@ class AppCommand extends Command
 
         # Use a loop to create 5 users
         for ($i = 0; $i < 5; $i++) {
-
-            $user = [
-                'name' => $faker->name,
-            ];
-
+            $user = ['name' => $faker->name,];
             $this->app->db()->insert('users', $user);
         }
 
@@ -86,8 +82,8 @@ class AppCommand extends Command
 
     public function seedMoves()
     {
-
         # NOTE that this script may take some time to run as it will simulate the playing of games!
+
         $games = $this->app->db()->all('games');
 
         foreach ($games as $game) {
@@ -137,7 +133,6 @@ class AppCommand extends Command
                     array_shift($computer_cards);
                 }
 
-                # ---------------------------------- 
                 $data = [
                     'game_id'               => $game['id'],
                     'number'                => $round,
@@ -156,6 +151,7 @@ class AppCommand extends Command
                 $round++;
             }
         }
+
         dump('Sample moves have been created for each existing game!');
     }
 
