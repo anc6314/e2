@@ -59,7 +59,7 @@ class AppCommand extends Command
 
         foreach ($users as $user) {
             # create a random number of games 1 to 3; 
-            # limited number of games because a game could have 200 rounds and don't want the seed moves function to run too long
+            # limited number of games because a game could have 200+ rounds and don't want the seedMoves function to run too long
 
             $games = rand(1, 3);
 
@@ -83,7 +83,7 @@ class AppCommand extends Command
     public function seedMoves()
     {
         # NOTE that this script may take some time to run as it will simulate the playing of games!
-
+        dump('Starting to simulate games.  Warning: this may take some time!');
         $games = $this->app->db()->all('games');
 
         foreach ($games as $game) {
