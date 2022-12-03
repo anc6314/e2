@@ -25,6 +25,28 @@ class AppController extends Controller
         return $this->app->view('index', $data);
     }
 
+    public function game()
+    {
+        $game_id = $this->app->param('id');
+
+        if (is_null($game_id)) {
+            $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
+        }
+
+        $moves = $this->app->db()->findByColumn('moves', 'game_id', '=', $game_id);
+
+        if (empty($moves)) {
+            $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
+        }
+
+        $data = [
+            'game_id' =>  $game_id,
+            'moves'   =>  $moves,
+        ];
+
+        return $this->app->view('/game', $data);
+    }
+
     public function play()
     {
         $winnerClass        = "";

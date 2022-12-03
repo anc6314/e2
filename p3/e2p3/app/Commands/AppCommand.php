@@ -30,6 +30,7 @@ class AppCommand extends Command
             'computer_card'         => 'varchar(255)',
             'computer_card_class'   => 'varchar(255)',
             'winner'                => 'varchar(255)',
+            'winner_class'          => 'varchar(255)',
             'choice'                => 'varchar(255)',
             'player_card_count'     => 'int',
             'computer_card_count'   => 'int'
@@ -133,6 +134,14 @@ class AppCommand extends Command
                     array_shift($computer_cards);
                 }
 
+                if ($winner == "You") {
+                    $winner_class =  "success";
+                } else if ($winner == "Computer") {
+                    $winner_class =  "danger";
+                } else if ($winner == "Tie") {
+                    $winner_class =  "warning";
+                }
+
                 $data = [
                     'game_id'               => $game['id'],
                     'number'                => $round,
@@ -141,6 +150,7 @@ class AppCommand extends Command
                     'computer_card'         => $computer_card->getName(),
                     'computer_card_class'   => $computer_card->getClassName(),
                     'winner'                => $winner,
+                    'winner_class'          => $winner_class,
                     'choice'                => $choice,
                     'player_card_count'     => sizeof($player_cards),
                     'computer_card_count'   => sizeof($computer_cards)
