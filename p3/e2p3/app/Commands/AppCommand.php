@@ -109,7 +109,7 @@ class AppCommand extends Command
 
                 # Card with highest value wins that round and keeps both cards.
                 if ($player_card->value > $computer_card->value) {
-                    $winner = "You";
+                    $winner = "You";  # this really should be the player's actual name but for sample data this will work
 
                     # take card from other player and put at end of deck
                     $card = array_shift($computer_cards);

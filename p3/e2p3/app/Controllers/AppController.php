@@ -287,6 +287,36 @@ class AppController extends Controller
         $this->app->redirect('/play', $data);
     }
 
+    public function player()
+    {
+        $user_id = $this->app->param('id');
+
+        if (is_null($user_id)) {
+            $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
+        }
+
+        $user = $this->app->db()->findByColumn('users', 'id', '=', $user_id);
+
+        if (empty($user)) {
+            $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
+        }
+
+        $name = $user[0]['name'];
+
+        $games = $this->app->db()->findByColumn('games', 'user_id', '=', $user_id);
+
+        if (empty($games)) {
+            $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
+        }
+
+        $data = [
+            'name'    =>  $name,
+            'games'   =>  $games,
+        ];
+
+        return $this->app->view('/player', $data);
+    }
+
     public function register()
     {
         # pull data in from the form and see if there is an existing user . . .
