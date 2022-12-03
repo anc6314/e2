@@ -13,13 +13,15 @@
                 <div class="card">
                     <div class="card-header" id="headingOne">
                         <h2>
-                            Player list
+                            Players
                         </h2>
                     </div>
                     <div class="card-body">
                         @foreach ($users as $user)
                             <div class="row">
-                                {{ $user['name'] }}
+                                <a href="/player?id={{ $user['id'] }}">
+                                    {{ $user['name'] }}
+                                </a>
                             </div>
                         @endforeach
 
@@ -133,7 +135,7 @@
                             <div class="card-header" id="headingHistory">
                                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapseHistory"
                                     aria-expanded="false" aria-controls="collapseHistory">
-                                    <h2> Player History</h2>
+                                    <h2>Games you played</h2>
                                 </button>
                                 <div id="collapseHistory" class="collapse show" aria-labelledby="headingHistory"
                                     data-parent="#accordion">
