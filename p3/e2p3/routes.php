@@ -7,4 +7,5 @@ return [
     '/'             => ['AppController', 'index'],
     '/play'         => ['AppController', 'play'],
     '/play/process' => ['AppController', 'process'],
+    '/register'     => ['AppController', 'register'],
 ];

@@ -6,12 +6,23 @@ use App\Controllers\Deck; # Note: requires php 8.1 or higher for enum support
 
 class AppController extends Controller
 {
-    /**
-     * This method is triggered by the route "/"
-     */
+
     public function index()
     {
-        return $this->app->view('index');
+        $name  = $this->app->sessionGet('name');
+        $stats = $this->app->sessionGet('stats');
+        $games = $this->app->sessionGet('games');
+
+        $users = $this->app->db()->all('users');
+
+        $data = [
+            'name'             =>  $name,
+            'users'            =>  $users,
+            'stats'            =>  $stats,
+            'games'            =>  $games,
+        ];
+
+        return $this->app->view('index', $data);
     }
 
     public function play()
@@ -252,5 +263,43 @@ class AppController extends Controller
         ];
 
         $this->app->redirect('/play', $data);
+    }
+
+    public function register()
+    {
+        # pull data in from the form and see if there is an existing user . . .
+        $name = $this->app->input('name', '');
+        $users = $this->app->db()->findByColumn('users', 'name', '=', $name);
+
+        if (!empty($users)) {
+            $user = $users[0];
+            $user_id = $user['id'];
+
+            # now pull in the game history to the session so it can display when/if they return
+            $games = $this->app->db()->findByColumn('games', 'user_id', '=', $user_id);
+            $this->app->sessionSet('games', $games);
+
+            # Calc some basic stats
+
+            # https://stackoverflow.com/questions/37458399/count-all-rows-by-status
+
+            $sql = 'SELECT status, count(*) FROM games WHERE user_id = :user_id GROUP BY status';
+            $data = ['user_id' => $user_id];
+
+            $executed = $this->app->db()->run($sql, $data);
+            $stats = $executed->fetchAll();
+            $this->app->sessionSet('stats', $stats);
+        } else {
+            # if not, create the user
+            $data = ['name' => $name];
+            $user_id = $this->app->db()->insert('users', $data);
+        }
+
+        # set the user/player name and ID in the session so they can play!
+        $this->app->sessionSet('name',    $name);
+        $this->app->sessionSet('user_id', $user_id);
+
+        # now send them to the game!
+        $this->app->redirect('/play');
     }
 }

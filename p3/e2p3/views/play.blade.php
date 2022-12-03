@@ -136,42 +136,38 @@
                 <div id="accordion">
                     <div class="card">
                         <div class="card-header" id="headingOne">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseInstructions"
-                                    aria-expanded="false" aria-controls="collapseInstructions">
-                                    <h2>
-                                        Instructions:
-                                    </h2>
-                                </button>
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseInstructions"
+                                aria-expanded="false" aria-controls="collapseInstructions">
+                                <h2>
+                                    Instructions:
+                                </h2>
+                            </button>
+                            <div id="collapseInstructions" class="collapse show" aria-labelledby="headingOne"
+                                data-parent="#accordion">
+                                <div class="card-body">
 
-                                <div id="collapseInstructions" class="collapse show" aria-labelledby="headingOne"
-                                    data-parent="#accordion">
-                                    <div class="card-body">
+                                    <ul>
+                                        <li>Each player starts with half the deck (26 cards), shuffled in a random
+                                            order.
+                                        </li>
+                                        <li>For each round, a card is picked from the “top” of each player’s cards.
+                                        </li>
+                                        <li>The Human player has the <b>choice of playing that top card or
+                                                re-shuffling</b>
+                                            the
+                                            deck and playing
+                                            that
+                                            card instead</li>
+                                        <li>Whoevers card is highest wins that round and keeps both cards.</li>
+                                        <li>If the two cards are of the same value, it’s a tie and those cards are
+                                            discarded.
+                                        </li>
+                                        <li>The player who ends up with 0 cards is the loser.</li>
+                                    </ul>
 
-                                        <ul>
-                                            <li>Each player starts with half the deck (26 cards), shuffled in a random
-                                                order.
-                                            </li>
-                                            <li>For each round, a card is picked from the “top” of each player’s cards.
-                                            </li>
-                                            <li>The Human player has the <b>choice of playing that top card or
-                                                    re-shuffling</b>
-                                                the
-                                                deck and playing
-                                                that
-                                                card instead</li>
-                                            <li>Whoevers card is highest wins that round and keeps both cards.</li>
-                                            <li>If the two cards are of the same value, it’s a tie and those cards are
-                                                discarded.
-                                            </li>
-                                            <li>The player who ends up with 0 cards is the loser.</li>
-                                        </ul>
-
-                                    </div>
                                 </div>
+                            </div>
                         </div>
-
-                        </h5>
                     </div>
                 </div>
             </div>
