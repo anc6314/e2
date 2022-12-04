@@ -6,6 +6,15 @@
 
 @section('content')
     <div class="container-fluid background">
+        {{-- Title row  --}}
+        <div class="row">
+            <div class="col">
+                <h1 class="body">
+                    Interactive War Card Game
+                </h1>
+            </div>
+        </div>
+
         <div class="row">
             {{-- Stats / left col --}}
             <div class="col">

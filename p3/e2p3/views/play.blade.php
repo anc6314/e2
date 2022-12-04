@@ -17,6 +17,11 @@
                     Interactive War Card Game
                 </h1>
             </div>
+            <div class="col"></div>
+            <div class="col">
+                <a href="/" class="btn btn-warning float-right">Home</a>
+            </div>
+
         </div>
 
         {{-- Game row  --}}

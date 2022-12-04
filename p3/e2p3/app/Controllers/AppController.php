@@ -28,6 +28,7 @@ class AppController extends Controller
     public function game()
     {
         $game_id = $this->app->param('id');
+        $name  = $this->app->sessionGet('name');
 
         if (is_null($game_id)) {
             $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
@@ -42,6 +43,7 @@ class AppController extends Controller
         $data = [
             'game_id' =>  $game_id,
             'moves'   =>  $moves,
+            'name'    =>  $name,
         ];
 
         return $this->app->view('/game', $data);

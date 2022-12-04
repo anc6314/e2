@@ -17,6 +17,13 @@
                     Move history for Game ID {{ $game_id }}
                 </h1>
             </div>
+            <div class="col"></div>
+            <div class="col">
+                <a href="/" class="btn btn-warning float-right">Home</a>
+                @if ($name)
+                    <a href="/play" class="btn btn-success float-right">Resume Playing</a>
+                @endif
+            </div>
         </div>
 
         {{-- History row  --}}
