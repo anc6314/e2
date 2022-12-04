@@ -53,7 +53,7 @@
                             </div>
                         </div>
                         <br />
-                        <div class="alert alert-{{ $winnerClass }}">
+                        <div class="alert alert-{{ $winner_class }}">
                             @if ($winner != 'Tie')
                                 {{ $winner }} won the last round!
                             @else
@@ -69,56 +69,46 @@
             {{-- Card/game play - middle col --}}
             <div class="col">
                 <table>
-                    @if ($winnerGame == '')
+
+                    <tr>
+                        <th>Your Card</th>
+                        <th>Computer's Card</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>
+                                <img src="{{ $player1CardPath }}" />
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                <img src="{{ $computerCardPath }}" />
+                            </span>
+                        </td>
+                    </tr>
+                    <form method='POST' action='/play/process'>
                         <tr>
-                            <th>Your Card</th>
-                            <th>Computer's Card</th>
+                            <td>
+                                <input type='radio' id='keep' name='choice' value='keep' checked>
+                                <label for='keep' class="black">Keep</label>
+                            </td>
+                            <td>
+                                <input type='radio' id='shuffle' name='choice' value='random'>
+                                <label for='shuffle' class="black">Get random card</label>
+                            </td>
                         </tr>
                         <tr>
                             <td>
-                                <span>
-                                    <img src="{{ $player1CardPath }}" />
-                                </span>
+                                <button class="btn btn-success" type='submit'>Play</button>
                             </td>
-                            <td>
-                                <span>
-                                    <img src="{{ $computerCardPath }}" />
-                                </span>
-                            </td>
-                        </tr>
-                        <form method='POST' action='/play/process'>
-                            <tr>
-                                <td>
-                                    <input type='radio' id='keep' name='choice' value='keep' checked>
-                                    <label for='keep' class="black">Keep</label>
-                                </td>
-                                <td>
-                                    <input type='radio' id='shuffle' name='choice' value='random'>
-                                    <label for='shuffle' class="black">Get random card</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <button class="btn btn-success" type='submit'>Play</button>
-                                </td>
-                        </form>
-                    @else
-                        <div class="alert alert-primary" role="alert">
+                    </form>
 
-                            @if ($winnerGame != 'Tie')
-                                Game over, {{ $winnerGame }} won the game!
-                            @else
-                                The game ended in a tie!
-                            @endif
-
-                        </div>
-                    @endif
 
                     <form method='POST' action='/play/process'>
                         <td>
                             <input type='hidden' id='reset' name='choice' value='reset'>
                             <button class="btn btn-danger" type='submit'>
-                                @if ($winnerGame = '')
+                                @if ($winner_game = '')
                                     New Game
                                 @else
                                     Reset

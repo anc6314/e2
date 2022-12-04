@@ -15,7 +15,7 @@ class AppCommand extends Command
             'name'  => 'varchar(255)',
         ]);
 
-        # note that status is either playing, won, or lost
+        # note that status is either playing, won, tie, or lost
         $this->app->db()->createTable('games', [
             'user_id'   => 'int',
             'status'    => 'varchar(255)',

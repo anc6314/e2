@@ -16,10 +16,10 @@ class AppController extends Controller
         $users = $this->app->db()->all('users');
 
         $data = [
-            'name'             =>  $name,
-            'users'            =>  $users,
-            'stats'            =>  $stats,
-            'games'            =>  $games,
+            'name'  =>  $name,
+            'users' =>  $users,
+            'stats' =>  $stats,
+            'games' =>  $games,
         ];
 
         return $this->app->view('index', $data);
@@ -49,20 +49,21 @@ class AppController extends Controller
 
     public function play()
     {
-        $winnerClass        = "";
-        $round              = $this->app->sessionGet('round');
+        $winner_game    = "";
+        $winner_class   = "";
+        $round          = $this->app->sessionGet('round');
+        $user_id        = $this->app->sessionGet('user_id');
 
         # Is this the first round?
         if (is_null($round)) {
             # Yes, so let's setup our default vars
 
-            $results = array(); # this will be an array of arrays that will used to output in view
-            $wins               = 0;
-            $ties               = 0;
-            $losses             = 0;
-            $round              = 1;
-            $winner             = "";
-            $winnerGame         = "";
+            $results    = array(); # this will be an array of arrays that will used to output in view
+            $wins        = 0;
+            $ties        = 0;
+            $losses      = 0;
+            $round       = 1;
+            $winner      = "";
 
             $losses         = 0;
             $winpercent     = 0;
@@ -75,7 +76,7 @@ class AppController extends Controller
             $this->app->sessionSet('totalLoses', $losses);
             $this->app->sessionSet('results', $results);
             $this->app->sessionSet('winner', $winner);
-            $this->app->sessionSet('winnerGame', $winnerGame);
+            $this->app->sessionSet('winner_game', $winner_game);
 
             # now let's setup the game of war!
             $deck = new Deck(true); # get a shuffled deck of cards
@@ -89,15 +90,26 @@ class AppController extends Controller
             # save our card data for the game
             $this->app->sessionSet('player1_cards',  $player1_cards);
             $this->app->sessionSet('computer_cards', $computer_cards);
+
+            # save game to DB
+            $data = [
+                'user_id'   => $user_id,
+                'status'    => 'playing',
+                'score'     => 0,
+            ];
+
+            $game_id = $this->app->db()->insert('games', $data);
+            $this->app->sessionSet('game_id',  $game_id);
         } else {
+
             # Nope, load the history data
-            $results        = $this->app->sessionGet('results');
+            $results        = $this->app->sessionGet('results'); # // <<< Need to load this from the DB!
             $wins           = $this->app->sessionGet('totalWins');
             $ties           = $this->app->sessionGet('totalTies');
             $losses         = $this->app->sessionGet('totalLoses');
             $round          = $this->app->sessionGet('round');
             $winner         = $this->app->sessionGet('winner');
-            $winnerGame     = $this->app->sessionGet('winnerGame');
+            $winner_game    = $this->app->sessionGet('winner_game');
 
             $player1_cards  = $this->app->sessionGet('player1_cards');
             $computer_cards = $this->app->sessionGet('computer_cards');
@@ -109,11 +121,11 @@ class AppController extends Controller
             $tiepercent     = round(($ties / $round) * 100, 2);
 
             if ($winner == "You") {
-                $winnerClass =  "success";
+                $winner_class =  "success";
             } else if ($winner == "Computer") {
-                $winnerClass =  "danger";
+                $winner_class =  "danger";
             } else if ($winner == "Tie") {
-                $winnerClass =  "warning";
+                $winner_class =  "warning";
             }
         }
 
@@ -121,15 +133,15 @@ class AppController extends Controller
         $computerCardPath   = $computer_cards[0]->getImagePath();
 
         $data = [
-            'round'             =>  $round,
-            'winner'            =>  $winner,
-            'winnerGame'        =>  $winnerGame,
-            'winnerClass'       =>  $winnerClass,
-            'player1_cards'     =>  '',
-            'computer_cards'    =>  '',
-            'wins'              =>  $wins,
-            'ties'              =>  $ties,
-            'losses'            =>  $losses,
+            'round'             => $round,
+            'winner'            => $winner,
+            '$winner_game'      => $winner_game,
+            'winner_class'      => $winner_class,
+            'player1_cards'     => '',
+            'computer_cards'    => '',
+            'wins'              => $wins,
+            'ties'              => $ties,
+            'losses'            => $losses,
             'winpercent'        => $winpercent,
             'losspercent'       => $losspercent,
             'tiepercent'        => $tiepercent,
@@ -149,10 +161,10 @@ class AppController extends Controller
         $losses             = 0;
         $round              = 1;
         $winner             = "";
-        $winnerGame         = "";
-        $winnerClass        = "";
-        $player1CardPath    = "";
-        $computerCardPath   = "";
+        $winner_game         = "";
+        $winner_class        = "";
+        $player1_card_path    = "";
+        $computer_card_path   = "";
 
         $choice = $this->app->input('choice', '');
 
@@ -160,6 +172,7 @@ class AppController extends Controller
             session_destroy();
         } else {
             $round          = $this->app->sessionGet('round');
+            $game_id        = $this->app->sessionGet('game_id');
             $results        = $this->app->sessionGet('results');
             $winner         = $this->app->sessionGet('winner');
             $player1_cards  = $this->app->sessionGet('player1_cards');
@@ -172,7 +185,6 @@ class AppController extends Controller
             if ($choice == 'random') {
                 shuffle($player1_cards);
             }
-
 
             $player1_card = $player1_cards[0];
             $computer_card = $computer_cards[0];
@@ -208,29 +220,35 @@ class AppController extends Controller
             }
 
             if ($winner == "You") {
-                $winnerClass =  "success";
+                $winner_class =  "success";
             } else if ($winner == "Computer") {
-                $winnerClass =  "danger";
+                $winner_class =  "danger";
             } else if ($winner == "Tie") {
-                $winnerClass =  "warning";
+                $winner_class =  "warning";
             }
 
-            # save output for display by the view
-            $result = array(
-                "Round"                 => $round,
-                "Player 1 card"         => $player1_card->getName(),
-                "Player 1 card class"   => $player1_card->getClassName(),
-                "Computer card"         => $computer_card->getName(),
-                "Computer card class"   => $computer_card->getClassName(),
-                "Winner"                => $winner,
-                "Winner class"          => $winnerClass,
-                "Player 1 cards left"   => (int) count($player1_cards),
-                "Computer cards left"   => (int) count($computer_cards),
-                "Choice"                => $choice
-            );
+            # save move to the DB
+            $data = [
+                'game_id'               => $game_id,
+                'number'                => $round,
+                'player_card'           => $player1_card->getName(),
+                'player_card_class'     => $player1_card->getClassName(),
+                'computer_card'         => $computer_card->getName(),
+                'computer_card_class'   => $computer_card->getClassName(),
+                'winner'                => $winner,
+                'winner_class'          => $winner_class,
+                'choice'                => $choice,
+                'player_card_count'     => sizeof($player1_cards),
+                'computer_card_count'   => sizeof($computer_cards)
+            ];
 
-            array_unshift($results, $result); # the history should be kept with the latest round on top - who like scrolling!
+            $this->app->db()->insert('moves', $data);
+
             $round++;
+
+            # save the cards back to the session for the game to continue
+            $this->app->sessionSet('player1_cards', $player1_cards);
+            $this->app->sessionSet('computer_cards', $computer_cards);
 
             # There is an edge case where the last round is a tie (and one user is out of cards after)
             # e.g. tie isn't an acceptiable outcome for the game but is for a round.
@@ -238,12 +256,30 @@ class AppController extends Controller
 
             if (count($computer_cards) == 0 || count($player1_cards) == 0) {
                 if (count($computer_cards) == 0 && count($player1_cards) == 0) {
-                    $winnerGame = "Tie";
+                    $winner_game = "Tie";
+                    $status = 'tie';
                 } else if (count($computer_cards) == 0) {
-                    $winnerGame = "You";
+                    $winner_game = "You";
+                    $status = 'won';
                 } else if (count($player1_cards) == 0) {
-                    $winnerGame = "Computer";
+                    $winner_game = "Computer";
+                    $status = 'lost';
                 }
+
+                $score = count($player1_cards) - count($computer_cards);
+
+                # update DB with game info
+                # https://www.tutorialspoint.com/mysql/mysql-update-query.htm
+
+                $sql = 'UPDATE games SET status = :status WHERE id = :id';
+
+                $data = [
+                    'id'        => $game_id,
+                    'status'    => $status,
+                    'score'     => $score,
+                ];
+
+                $this->app->db()->run($sql, $data);
             }
         }
 
@@ -252,34 +288,21 @@ class AppController extends Controller
         $losspercent    = round(($losses / $round) * 100, 2);
         $tiepercent     = round(($ties / $round) * 100, 2);
 
-        # save data to session
-        $this->app->sessionSet('round',           $round);
-        $this->app->sessionSet('results',         $results);
-        $this->app->sessionSet('winner',          $winner);
-        $this->app->sessionSet('winnerClass',     $winnerClass);
-        $this->app->sessionSet('winnerGame',      $winnerGame); # camel case used for vars
-        $this->app->sessionSet('player1_cards',   $player1_cards); #underscore used because this is array of objects
-        $this->app->sessionSet('computer_cards',  $computer_cards); #underscore used because this is array of objects
-        $this->app->sessionSet('totalWins',       $wins); # camel case used for vars
-        $this->app->sessionSet('totalTies',       $ties);
-        $this->app->sessionSet('totalLoses',      $losses);
-
-
         $data = [
-            'round'             =>  $round,
-            'winner'            =>  $winner,
-            'winnerGame'        =>  $winnerGame,
-            'winnerClass'       =>  $winnerClass,
-            'player1_cards'     =>  '',
-            'computer_cards'    =>  '',
-            'wins'              =>  $wins,
-            'ties'              =>  $ties,
-            'losses'            =>  $losses,
+            'round'             => $round,
+            'winner'            => $winner,
+            'winner_game'       => $winner_game,
+            'winner_class'      => $winner_class,
+            'player1_cards'     => $player1_cards,
+            'computer_cards'    => $computer_cards,
+            'wins'              => $wins,
+            'ties'              => $ties,
+            'losses'            => $losses,
             'winpercent'        => $winpercent,
             'losspercent'       => $losspercent,
             'tiepercent'        => $tiepercent,
-            'player1CardPath'   => $player1CardPath,
-            'computerCardPath'  => $computerCardPath,
+            'player1CardPath'   => $player1_card_path,
+            'computerCardPath'  => $computer_card_path,
             'results'           => $results,
 
         ];
