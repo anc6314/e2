@@ -49,36 +49,41 @@ class AppController extends Controller
 
     public function play()
     {
-        $winner_game    = "";
-        $winner_class   = "";
+        /**
+         *  Step 1: Read in vars: cards/user/game from session
+         *  Step 2: Check for first round and if so start new round logic
+         *  Step 3: If not first round, load up stats history from DB
+         *  Step 4: flash data and Render the play view
+         */
+
+        # Step 1: Read in vars: cards/user/game from session
         $round          = $this->app->sessionGet('round');
         $user_id        = $this->app->sessionGet('user_id');
+        $game_id        = $this->app->sessionGet('game_id');
+
+        # default vars to prevent undefined errors in view
+        $winner       = "";
+        $winner_class = "";
+        $winner_game  = "";
+        $ties         = 0;
 
         # Is this the first round?
         if (is_null($round)) {
             # Yes, so let's setup our default vars
-
             $results    = array(); # this will be an array of arrays that will used to output in view
-            $wins        = 0;
-            $ties        = 0;
-            $losses      = 0;
-            $round       = 1;
-            $winner      = "";
-
+            $wins           = 0;
+            $ties           = 0;
             $losses         = 0;
+
             $winpercent     = 0;
             $losspercent    = 0;
             $tiepercent     = 0;
 
+            # Set first round to prevent re-init of game
+            $round          = 1;
             $this->app->sessionSet('round', $round);
-            $this->app->sessionSet('totalWins', $wins);
-            $this->app->sessionSet('totalTies', $ties);
-            $this->app->sessionSet('totalLoses', $losses);
-            $this->app->sessionSet('results', $results);
-            $this->app->sessionSet('winner', $winner);
-            $this->app->sessionSet('winner_game', $winner_game);
 
-            # now let's setup the game of war!
+            # now let's setup a new game of war!
             $deck = new Deck(true); # get a shuffled deck of cards
 
             # Each player starts with half the deck (26 cards)
@@ -91,7 +96,7 @@ class AppController extends Controller
             $this->app->sessionSet('player1_cards',  $player1_cards);
             $this->app->sessionSet('computer_cards', $computer_cards);
 
-            # save game to DB
+            # save game to DB and set game ID in session
             $data = [
                 'user_id'   => $user_id,
                 'status'    => 'playing',
@@ -101,44 +106,54 @@ class AppController extends Controller
             $game_id = $this->app->db()->insert('games', $data);
             $this->app->sessionSet('game_id',  $game_id);
         } else {
+            # Step 3: If not first round, load up stats history from DB
 
-            # Nope, load the history data
-            $results        = $this->app->sessionGet('results'); # // <<< Need to load this from the DB!
-            $wins           = $this->app->sessionGet('totalWins');
-            $ties           = $this->app->sessionGet('totalTies');
-            $losses         = $this->app->sessionGet('totalLoses');
-            $round          = $this->app->sessionGet('round');
-            $winner         = $this->app->sessionGet('winner');
-            $winner_game    = $this->app->sessionGet('winner_game');
+            $sql = 'SELECT winner, count(*) FROM moves WHERE game_id = :game_id GROUP BY winner';
+            $data = ['game_id' => $game_id];
 
+            $executed = $this->app->db()->run($sql, $data);
+            $moves = $executed->fetchAll();
+
+            # https://1bestcsharp.blogspot.com/2016/07/php-mysql-pdo-using-foreach-loop.html
+            foreach ($moves as $move) {
+                $value = $move['count(*)'];
+                if ($move['winner'] == "Computer") {
+                    $losses = $value;
+                } else if ($move['winner'] == "You") {
+                    $wins = $value;
+                } else if ($move['winner'] == "Tie") {
+                    $ties = $value;
+                }
+            }
+
+            $results = $this->app->db()->findByColumn('moves', 'game_id', '=', $game_id);
+
+            # calc stats - note that we have to subtract the current round for accuate states
+            $winpercent     = ($wins == 0)  ? 0 : round(($wins / ($round - 1)) * 100, 2);
+            $losspercent    = ($losses == 0) ? 0 : round(($losses / ($round - 1)) * 100, 2);
+            $tiepercent     = ($ties == 0)  ? 0 : round(($ties / $round) * 100, 2);
+
+            # load cards from the session
             $player1_cards  = $this->app->sessionGet('player1_cards');
             $computer_cards = $this->app->sessionGet('computer_cards');
 
-            # calc stats
-            $losses         = $round - ($wins + $ties);
-            $winpercent     = round(($wins / $round) * 100, 2);
-            $losspercent    = round(($losses / $round) * 100, 2);
-            $tiepercent     = round(($ties / $round) * 100, 2);
+            # pull the winner and winner class from the last row
+            # https://www.geeksforgeeks.org/php-end-function/
 
-            if ($winner == "You") {
-                $winner_class =  "success";
-            } else if ($winner == "Computer") {
-                $winner_class =  "danger";
-            } else if ($winner == "Tie") {
-                $winner_class =  "warning";
-            }
+            $winner       = end($results)['winner'];
+            $winner_class = end($results)['winner_class'];
         }
 
+        # Step 4: flash data and Render the play view
         $player1CardPath    = $player1_cards[0]->getImagePath();
         $computerCardPath   = $computer_cards[0]->getImagePath();
 
         $data = [
+            'game_id'           => $game_id,
             'round'             => $round,
             'winner'            => $winner,
             '$winner_game'      => $winner_game,
             'winner_class'      => $winner_class,
-            'player1_cards'     => '',
-            'computer_cards'    => '',
             'wins'              => $wins,
             'ties'              => $ties,
             'losses'            => $losses,
@@ -151,150 +166,171 @@ class AppController extends Controller
 
         ];
 
-        return $this->app->view('play', $data);
+        return $this->app->view('/play', $data);
     }
 
     public function process()
     {
-        $wins               = 0;
-        $ties               = 0;
-        $losses             = 0;
-        $round              = 1;
-        $winner             = "";
-        $winner_game         = "";
-        $winner_class        = "";
-        $player1_card_path    = "";
-        $computer_card_path   = "";
+        /**
+         *  Step 1: Read in vars: cards/user from session
+         *  Step 2: Check for need to shuffle player 1 cards
+         *  Step 3: Process game / determine winner
+         *  Step 4: Save results to DB for this round
+         *  Step 5: Save card state to session - not in DB
+         *  Step 6: Determine if this game is over and if so:
+         *          save to DB, and start new game
+         *  Step 7: Calc stats
+         *  Step 8: Send user back to the play page with updated data
+         */
 
-        $choice = $this->app->input('choice', '');
+        # Step 1: read in vars: cards/user from session
 
-        if ($choice == 'reset') {
-            session_destroy();
+        # vars from the forms go here
+        $choice = $this->app->input('choice', ''); #keep card or draw random?
+
+        # these vars are stored in the session and not DB
+        $game_id        = $this->app->sessionGet('game_id');
+        $round          = $this->app->sessionGet('round');
+        $player1_cards  = $this->app->sessionGet('player1_cards');
+        $computer_cards = $this->app->sessionGet('computer_cards');
+
+        # Step 2: Check for need to shuffle player 1 cards
+        if ($choice == 'random') {
+            shuffle($player1_cards);
+        }
+
+        # Step 3: process game / determine winner
+        $player1_card = $player1_cards[0];
+        $computer_card = $computer_cards[0];
+
+        # Card with highest value wins that round and keeps both cards.
+        if ($player1_card->value > $computer_card->value) {
+            $winner = "You";
+            $winner_class =  "success";
+
+            # take card from other player and put at end of deck
+            $card = array_shift($computer_cards);
+            array_push($player1_cards, $card);
+
+            # move our winning card to end of the deck
+            array_push($player1_cards, $player1_cards[0]);
+            array_shift($player1_cards);
+        } elseif ($computer_card->value > $player1_card->value) {
+            $winner = "Computer";
+            $winner_class =  "danger";
+            # take card from other player and put at end of deck
+            $card = array_shift($player1_cards);
+            array_push($computer_cards, $card);
+
+            # move our winning card to end of the deck
+            array_push($computer_cards, $computer_cards[0]);
+            array_shift($computer_cards);
         } else {
-            $round          = $this->app->sessionGet('round');
-            $game_id        = $this->app->sessionGet('game_id');
-            $results        = $this->app->sessionGet('results');
-            $winner         = $this->app->sessionGet('winner');
-            $player1_cards  = $this->app->sessionGet('player1_cards');
-            $computer_cards = $this->app->sessionGet('computer_cards');
-            $wins           = $this->app->sessionGet('totalWins');
-            $ties           = $this->app->sessionGet('totalTies');
-            $losses         = $this->app->sessionGet('totalLoses');
+            $winner = "Tie";
+            $winner_class =  "warning";
+            #  it’s a tie and those cards are discarded.
+            array_shift($player1_cards);
+            array_shift($computer_cards);
+        }
 
-            # --------------------------
-            if ($choice == 'random') {
-                shuffle($player1_cards);
+        # Step 4: save results to DB for this round
+        $data = [
+            'game_id'               => $game_id,
+            'number'                => $round,
+            'player_card'           => $player1_card->getName(),
+            'player_card_class'     => $player1_card->getClassName(),
+            'computer_card'         => $computer_card->getName(),
+            'computer_card_class'   => $computer_card->getClassName(),
+            'winner'                => $winner,
+            'winner_class'          => $winner_class,
+            'choice'                => $choice,
+            'player_card_count'     => sizeof($player1_cards),
+            'computer_card_count'   => sizeof($computer_cards)
+        ];
+
+        $this->app->db()->insert('moves', $data);
+
+        $round++;
+        $this->app->sessionSet('round', $round);
+
+        # Step 5: save card state to session - not in DB
+        $this->app->sessionSet('player1_cards', $player1_cards);
+        $this->app->sessionSet('computer_cards', $computer_cards);
+
+
+        #Step 6: determine if this game is over and if so: save to DB, and start new game
+
+        # There is an edge case where the last round is a tie (and one user is out of cards after)
+        # e.g. tie isn't an acceptiable outcome for the game but is for a round.
+        # For that reason, we can't simply use the last $winner value in the view 
+
+        if (count($computer_cards) == 0 || count($player1_cards) == 0) {
+            if (count($computer_cards) == 0 && count($player1_cards) == 0) {
+                $winner_game = "Tie";
+                $status = 'tie';
+            } else if (count($computer_cards) == 0) {
+                $winner_game = "You";
+                $status = 'won';
+            } else if (count($player1_cards) == 0) {
+                $winner_game = "Computer";
+                $status = 'lost';
             }
 
-            $player1_card = $player1_cards[0];
-            $computer_card = $computer_cards[0];
+            $score = count($player1_cards) - count($computer_cards);
 
-            # Card with highest value wins that round and keeps both cards.
-            if ($player1_card->value > $computer_card->value) {
-                $winner = "You";
-                $wins++;
+            # update DB with game info
+            # https://www.tutorialspoint.com/mysql/mysql-update-query.htm
 
-                # take card from other player and put at end of deck
-                $card = array_shift($computer_cards);
-                array_push($player1_cards, $card);
+            $sql = 'UPDATE games SET status = :status WHERE id = :id';
 
-                # move our winning card to end of the deck
-                array_push($player1_cards, $player1_cards[0]);
-                array_shift($player1_cards);
-            } elseif ($computer_card->value > $player1_card->value) {
-                $winner = "Computer";
-                $losses++;
-                # take card from other player and put at end of deck
-                $card = array_shift($player1_cards);
-                array_push($computer_cards, $card);
-
-                # move our winning card to end of the deck
-                array_push($computer_cards, $computer_cards[0]);
-                array_shift($computer_cards);
-            } else {
-                $winner = "Tie";
-                $ties++;
-                #  it’s a tie and those cards are discarded.
-                array_shift($player1_cards);
-                array_shift($computer_cards);
-            }
-
-            if ($winner == "You") {
-                $winner_class =  "success";
-            } else if ($winner == "Computer") {
-                $winner_class =  "danger";
-            } else if ($winner == "Tie") {
-                $winner_class =  "warning";
-            }
-
-            # save move to the DB
             $data = [
-                'game_id'               => $game_id,
-                'number'                => $round,
-                'player_card'           => $player1_card->getName(),
-                'player_card_class'     => $player1_card->getClassName(),
-                'computer_card'         => $computer_card->getName(),
-                'computer_card_class'   => $computer_card->getClassName(),
-                'winner'                => $winner,
-                'winner_class'          => $winner_class,
-                'choice'                => $choice,
-                'player_card_count'     => sizeof($player1_cards),
-                'computer_card_count'   => sizeof($computer_cards)
+                'id'        => $game_id,
+                'status'    => $status,
+                'score'     => $score,
             ];
 
-            $this->app->db()->insert('moves', $data);
+            $this->app->db()->run($sql, $data);
 
-            $round++;
+            # start new game
+            // TODO: start New game here            
+        }
 
-            # save the cards back to the session for the game to continue
-            $this->app->sessionSet('player1_cards', $player1_cards);
-            $this->app->sessionSet('computer_cards', $computer_cards);
 
-            # There is an edge case where the last round is a tie (and one user is out of cards after)
-            # e.g. tie isn't an acceptiable outcome for the game but is for a round.
-            # For that reason, we can't simply use the last $winner value in the view 
+        # *  Step 7: Calc stats
 
-            if (count($computer_cards) == 0 || count($player1_cards) == 0) {
-                if (count($computer_cards) == 0 && count($player1_cards) == 0) {
-                    $winner_game = "Tie";
-                    $status = 'tie';
-                } else if (count($computer_cards) == 0) {
-                    $winner_game = "You";
-                    $status = 'won';
-                } else if (count($player1_cards) == 0) {
-                    $winner_game = "Computer";
-                    $status = 'lost';
-                }
+        $sql = 'SELECT winner, count(*) FROM moves WHERE game_id = :game_id GROUP BY winner';
+        $data = ['game_id' => $game_id];
 
-                $score = count($player1_cards) - count($computer_cards);
+        $executed = $this->app->db()->run($sql, $data);
+        $moves = $executed->fetchAll();
 
-                # update DB with game info
-                # https://www.tutorialspoint.com/mysql/mysql-update-query.htm
-
-                $sql = 'UPDATE games SET status = :status WHERE id = :id';
-
-                $data = [
-                    'id'        => $game_id,
-                    'status'    => $status,
-                    'score'     => $score,
-                ];
-
-                $this->app->db()->run($sql, $data);
+        # https://1bestcsharp.blogspot.com/2016/07/php-mysql-pdo-using-foreach-loop.html
+        foreach ($moves as $move) {
+            $value = $move['count(*)'];
+            if ($move['winner'] == "Computer") {
+                $losses = $value;
+            } else if ($move['winner'] == "You") {
+                $wins = $value;
+            } else if ($move['winner'] == "Tie") {
+                $ties = $value;
             }
         }
 
-        # calc stats
         $winpercent     = round(($wins / $round) * 100, 2);
         $losspercent    = round(($losses / $round) * 100, 2);
         $tiepercent     = round(($ties / $round) * 100, 2);
 
+        $results = $this->app->db()->findByColumn('moves', 'game_id', '=', $game_id);
+
+        # Step 8: send user back to the play page with updated data
+        $player1_card_path    = $player1_cards[0]->getImagePath();
+        $computer_card_path   = $computer_cards[0]->getImagePath();
+
         $data = [
-            'round'             => $round,
+            'game_id'           => $game_id,
             'winner'            => $winner,
             'winner_game'       => $winner_game,
             'winner_class'      => $winner_class,
-            'player1_cards'     => $player1_cards,
-            'computer_cards'    => $computer_cards,
             'wins'              => $wins,
             'ties'              => $ties,
             'losses'            => $losses,

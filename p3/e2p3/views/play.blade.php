@@ -23,9 +23,9 @@
         <div class="row">
             {{-- Stats / left col --}}
             <div class="col">
-                <h2>Stats</h2>
+                <h2>Stats for game {{ $game_id }}</h2>
                 <div>
-                    Total Rounds: {{ $round }}
+                    Current Round: {{ $round }}
                     <br />
 
                     @if ($round > 1)
@@ -86,6 +86,7 @@
                             </span>
                         </td>
                     </tr>
+
                     <form method='POST' action='/play/process'>
                         <tr>
                             <td>
@@ -98,25 +99,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td colspan=2>
                                 <button class="btn btn-success" type='submit'>Play</button>
                             </td>
                     </form>
-
-
-                    <form method='POST' action='/play/process'>
-                        <td>
-                            <input type='hidden' id='reset' name='choice' value='reset'>
-                            <button class="btn btn-danger" type='submit'>
-                                @if ($winner_game = '')
-                                    New Game
-                                @else
-                                    Reset
-                                @endif
-                            </button>
-                        </td>
-                    </form>
-
                     </tr>
                 </table>
             </div>
@@ -181,24 +167,24 @@
                             <th scope="col">Computer cards left</th>
                         </tr>
                         @foreach ($results as $result)
-                            <tr class="table-{{ $result['Winner class'] }} black">
-                                <td> {{ $result['Round'] }}</td>
+                            <tr class="table-{{ $result['winner_class'] }} black">
+                                <td> {{ $result['number'] }}</td>
                                 <td>
-                                    <span class={{ $result['Player 1 card class'] }}>
-                                        {{ $result['Player 1 card'] }}
+                                    <span class={{ $result['player_card_class'] }}>
+                                        {{ $result['player_card'] }}
                                     </span>
                                 </td>
                                 <td>
-                                    <span class={{ $result['Computer card class'] }}>
-                                        {{ $result['Computer card'] }}
+                                    <span class={{ $result['computer_card_class'] }}>
+                                        {{ $result['computer_card'] }}
                                     </span>
                                 </td>
                                 <td>
-                                    {{ $result['Winner'] }}
+                                    {{ $result['winner'] }}
                                 </td>
-                                <td> {{ $result['Choice'] }} </td>
-                                <td> {{ $result['Player 1 cards left'] }} </td>
-                                <td> {{ $result['Computer cards left'] }} </td>
+                                <td> {{ $result['choice'] }} </td>
+                                <td> {{ $result['player_card_count'] }} </td>
+                                <td> {{ $result['computer_card_count'] }} </td>
                             </tr>
                         @endforeach
                     </table>
