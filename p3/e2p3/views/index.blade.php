@@ -45,6 +45,19 @@
                                 your
                                 same stats / game history.
                             </div>
+
+                            @if ($app->errorsExist())
+                                <div class="row">
+                                    @if ($app->errorsExist())
+                                        <ul class='error alert alert-danger'>
+                                            @foreach ($app->errors() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            @endif
+
                             <div class="row">
                                 <form method='POST' action='/register'>
                                     <div class="col mb-4">

@@ -342,6 +342,11 @@ class AppController extends Controller
 
     public function register()
     {
+
+        $this->app->validate([
+            'name' => 'required',
+        ]);
+
         # pull data in from the form and see if there is an existing user . . .
         $name = $this->app->input('name', '');
         $users = $this->app->db()->findByColumn('users', 'name', '=', $name);
