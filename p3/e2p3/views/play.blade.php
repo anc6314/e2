@@ -1,7 +1,7 @@
 @extends('templates/master')
 
 @section('title')
-    Play
+    Playing war!
 @endsection
 
 @section('bodyclass')
@@ -36,25 +36,25 @@
                     @if ($round > 1)
                         Wins: {{ $wins }}
                         <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width:  {{ $winpercent }}%;"
-                                aria-valuenow="{{ $winpercent }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ $winpercent }}%
+                            <div class="progress-bar bg-success" role="progressbar" style="width:  {{ $win_percent }}%;"
+                                aria-valuenow="{{ $win_percent }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ $win_percent }}%
                             </div>
                         </div>
 
                         Losses: {{ $losses }}
                         <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width:  {{ $losspercent }}%;"
-                                aria-valuenow="{{ $losspercent }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ $losspercent }}
+                            <div class="progress-bar bg-danger" role="progressbar" style="width:  {{ $loss_percent }}%;"
+                                aria-valuenow="{{ $loss_percent }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ $loss_percent }}
                                 %</div>
                         </div>
 
                         Ties: {{ $ties }}
                         <div class="progress">
-                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $tiepercent }}%;"
-                                aria-valuenow="{{ $tiepercent }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ $tiepercent }}%
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $tie_percent }}%;"
+                                aria-valuenow="{{ $tie_percent }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ $tie_percent }}%
                             </div>
                         </div>
                         <br />
@@ -82,12 +82,12 @@
                     <tr>
                         <td>
                             <span>
-                                <img src="{{ $player1CardPath }}" />
+                                <img src="{{ $player1_card_path }}" />
                             </span>
                         </td>
                         <td>
                             <span>
-                                <img src="{{ $computerCardPath }}" />
+                                <img src="{{ $computer_card_path }}" />
                             </span>
                         </td>
                     </tr>
@@ -173,7 +173,11 @@
                         </tr>
                         @foreach ($results as $result)
                             <tr class="table-{{ $result['winner_class'] }} black">
-                                <td> {{ $result['number'] }}</td>
+                                <td>
+                                    <a href="/round?id={{ $result['id'] }}">
+                                        {{ $result['number'] }}
+                                    </a>
+                                </td>
                                 <td>
                                     <span class={{ $result['player_card_class'] }}>
                                         {{ $result['player_card'] }}

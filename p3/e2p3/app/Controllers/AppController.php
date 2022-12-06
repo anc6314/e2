@@ -64,25 +64,24 @@ class AppController extends Controller
         $game_id        = $this->app->sessionGet('game_id');
 
         # default vars to prevent undefined errors in view
-        $winner       = "";
-        $winner_class = "";
-        $winner_game  = "";
-        $ties         = 0;
+        $winner         = "";
+        $winner_class   = "";
+        $winner_game    = "";
+
+        $wins           = 0;
+        $ties           = 0;
+        $losses         = 0;
+
+        $win_percent     = 0;
+        $loss_percent    = 0;
+        $tie_percent     = 0;
+
+        $results        = array(); # this will be an array of arrays that will used to output in view
 
         # Is this the first round?
         if (is_null($round)) {
-            # Yes, so let's setup our default vars
-            $results    = array(); # this will be an array of arrays that will used to output in view
-            $wins           = 0;
-            $ties           = 0;
-            $losses         = 0;
-
-            $winpercent     = 0;
-            $losspercent    = 0;
-            $tiepercent     = 0;
-
             # Set first round to prevent re-init of game
-            $round          = 1;
+            $round = 1;
             $this->app->sessionSet('round', $round);
 
             # now let's setup a new game of war!
@@ -107,7 +106,12 @@ class AppController extends Controller
 
             $game_id = $this->app->db()->insert('games', $data);
             $this->app->sessionSet('game_id',  $game_id);
-        } else {
+        } else if ($round == 1) {
+            # User has already started a game, never made any moves, and reloaded the page or wants to resume the existing game
+            # load cards from the session
+            $player1_cards  = $this->app->sessionGet('player1_cards');
+            $computer_cards = $this->app->sessionGet('computer_cards');
+        } else if ($round > 1) {
             # Step 3: If not first round, load up stats history from DB
 
             $sql = 'SELECT winner, count(*) FROM moves WHERE game_id = :game_id GROUP BY winner';
@@ -131,9 +135,9 @@ class AppController extends Controller
             $results = $this->app->db()->findByColumn('moves', 'game_id', '=', $game_id);
 
             # calc stats - note that we have to subtract the current round for accuate states
-            $winpercent     = ($wins == 0)  ? 0 : round(($wins / ($round - 1)) * 100, 2);
-            $losspercent    = ($losses == 0) ? 0 : round(($losses / ($round - 1)) * 100, 2);
-            $tiepercent     = ($ties == 0)  ? 0 : round(($ties / $round) * 100, 2);
+            $win_percent     = ($wins == 0)  ? 0 : round(($wins / ($round - 1)) * 100, 2);
+            $loss_percent    = ($losses == 0) ? 0 : round(($losses / ($round - 1)) * 100, 2);
+            $tie_percent     = ($ties == 0)  ? 0 : round(($ties / $round) * 100, 2);
 
             # load cards from the session
             $player1_cards  = $this->app->sessionGet('player1_cards');
@@ -147,24 +151,24 @@ class AppController extends Controller
         }
 
         # Step 4: flash data and Render the play view
-        $player1CardPath    = $player1_cards[0]->getImagePath();
-        $computerCardPath   = $computer_cards[0]->getImagePath();
+        $player1_card_path    = $player1_cards[0]->getImagePath();
+        $computer_card_path   = $computer_cards[0]->getImagePath();
 
         $data = [
-            'game_id'           => $game_id,
-            'round'             => $round,
-            'winner'            => $winner,
-            '$winner_game'      => $winner_game,
-            'winner_class'      => $winner_class,
-            'wins'              => $wins,
-            'ties'              => $ties,
-            'losses'            => $losses,
-            'winpercent'        => $winpercent,
-            'losspercent'       => $losspercent,
-            'tiepercent'        => $tiepercent,
-            'player1CardPath'   => $player1CardPath,
-            'computerCardPath'  => $computerCardPath,
-            'results'           => $results,
+            'game_id'               => $game_id,
+            'round'                 => $round,
+            'winner'                => $winner,
+            '$winner_game'          => $winner_game,
+            'winner_class'          => $winner_class,
+            'wins'                  => $wins,
+            'ties'                  => $ties,
+            'losses'                => $losses,
+            'win_percent'           => $win_percent,
+            'loss_percent'          => $loss_percent,
+            'tie_percent'           => $tie_percent,
+            'player1_card_path'     => $player1_card_path,
+            'computer_card_path'    => $computer_card_path,
+            'results'               => $results,
 
         ];
 
@@ -318,9 +322,9 @@ class AppController extends Controller
             }
         }
 
-        $winpercent     = round(($wins / $round) * 100, 2);
-        $losspercent    = round(($losses / $round) * 100, 2);
-        $tiepercent     = round(($ties / $round) * 100, 2);
+        $win_percent     = round(($wins / $round) * 100, 2);
+        $loss_percent    = round(($losses / $round) * 100, 2);
+        $tie_percent     = round(($ties / $round) * 100, 2);
 
         $results = $this->app->db()->findByColumn('moves', 'game_id', '=', $game_id);
 
@@ -329,19 +333,19 @@ class AppController extends Controller
         $computer_card_path   = $computer_cards[0]->getImagePath();
 
         $data = [
-            'game_id'           => $game_id,
-            'winner'            => $winner,
-            'winner_game'       => $winner_game,
-            'winner_class'      => $winner_class,
-            'wins'              => $wins,
-            'ties'              => $ties,
-            'losses'            => $losses,
-            'winpercent'        => $winpercent,
-            'losspercent'       => $losspercent,
-            'tiepercent'        => $tiepercent,
-            'player1CardPath'   => $player1_card_path,
-            'computerCardPath'  => $computer_card_path,
-            'results'           => $results,
+            'game_id'               => $game_id,
+            'winner'                => $winner,
+            'winner_game'           => $winner_game,
+            'winner_class'          => $winner_class,
+            'wins'                  => $wins,
+            'ties'                  => $ties,
+            'losses'                => $losses,
+            'win_percent'           => $win_percent,
+            'loss_percent'          => $loss_percent,
+            'tie_percent'           => $tie_percent,
+            'player1_card_path'     => $player1_card_path,
+            'computer_card_path'    => $computer_card_path,
+            'results'               => $results,
 
         ];
 
@@ -419,5 +423,44 @@ class AppController extends Controller
 
         # now send them to the game!
         $this->app->redirect('/play');
+    }
+
+    public function round()
+    {
+        # NOTE: The round number and the move_id are NOT the same; move_id is the primary key but round number can repeate
+        $move_id = $this->app->param('id');
+
+        if (is_null($move_id)) {
+            $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
+        }
+
+        $result = $this->app->db()->findByColumn('moves', 'id', '=', $move_id);
+
+        # https://www.geeksforgeeks.org/how-to-check-whether-an-array-is-empty-using-php/
+        if (is_null($result)) {
+            $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
+        }
+
+        # make card objects to match this round so we can display them
+
+        #result[0]['player_card']
+        #result[0]['computer_card']
+
+        #$player1_card = new Card($suit, $i);
+        #$computer_card = new Card($suit, $i);
+
+        #$player1_card_path    = $player1_card->getImagePath();
+        #$computer_card_path   = $computer_card->getImagePath();
+
+        $player1_card_path    = "";
+        $computer_card_path   = "";
+
+        $data = [
+            'result'              =>  $result[0],
+            'player1_card_path'   =>  $player1_card_path,
+            'computer_card_path'  =>  $computer_card_path,
+        ];
+
+        return $this->app->view('/round', $data);
     }
 }

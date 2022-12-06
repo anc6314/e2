@@ -1,7 +1,7 @@
 @extends('templates/master')
 
 @section('title')
-    Instructions
+    War Card Game - Home
 @endsection
 
 @section('content')

@@ -10,4 +10,5 @@ return [
     '/play/process' => ['AppController', 'process'],
     '/player'       => ['AppController', 'player'],
     '/register'     => ['AppController', 'register'],
+    '/round'        => ['AppController', 'round'],
 ];

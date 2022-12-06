@@ -1,7 +1,7 @@
 @extends('templates/master')
 
 @section('title')
-    Play
+    Move history for Game ID {{ $game_id }}
 @endsection
 
 @section('bodyclass')
@@ -45,7 +45,11 @@
                         </tr>
                         @foreach ($moves as $move)
                             <tr class="table-{{ $move['winner_class'] }} black">
-                                <td> {{ $move['number'] }}</td>
+                                <td>
+                                    <a href="/round?id={{ $move['id'] }}">
+                                        {{ $move['number'] }}
+                                    </a>
+                                </td>
                                 <td>
                                     <span class={{ $move['player_card_class'] }}>
                                         {{ $move['player_card'] }}

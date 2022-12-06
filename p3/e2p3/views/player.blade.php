@@ -1,7 +1,7 @@
 @extends('templates/master')
 
 @section('title')
-    Play
+    Player History for {{ $name }}
 @endsection
 
 @section('bodyclass')
