@@ -59,10 +59,18 @@
                         </div>
                         <br />
                         <div class="alert alert-{{ $winner_class }}">
-                            @if ($winner != 'Tie')
-                                {{ $winner }} won the last round!
+                            @if ($winner == 'You')
+                                <span test='won-output'>
+                                    {{ $winner }} won the last round!
+                                </span>
+                            @elseif ($winner == 'Computer')
+                                <span test='lost-output'>
+                                    {{ $winner }} won the last round!
+                                </span>
                             @else
-                                The last round was a tie!
+                                <span test='tie-output'>
+                                    The last round was a tie!
+                                </span>
                             @endif
                         </div>
                     @endif
@@ -83,12 +91,12 @@
                     <tr>
                         <td>
                             <span>
-                                <img src="{{ $player1_card_path }}" />
+                                <img test='player-card-image' src="{{ $player1_card_path }}" />
                             </span>
                         </td>
                         <td>
                             <span>
-                                <img src="{{ $computer_card_path }}" />
+                                <img test='computer-card-image' src="{{ $computer_card_path }}" />
                             </span>
                         </td>
                     </tr>
@@ -96,17 +104,18 @@
                     <form method='POST' action='/play/process'>
                         <tr>
                             <td>
-                                <input type='radio' id='keep' name='choice' value='keep' checked>
+                                <input test='keep-radio' type='radio' id='keep' name='choice' value='keep'
+                                    checked>
                                 <label for='keep' class="black">Keep</label>
                             </td>
                             <td>
-                                <input type='radio' id='shuffle' name='choice' value='random'>
+                                <input test='shuffle-radio' type='radio' id='shuffle' name='choice' value='random'>
                                 <label for='shuffle' class="black">Get random card</label>
                             </td>
                         </tr>
                         <tr>
                             <td colspan=2>
-                                <button class="btn btn-success" type='submit'>Play</button>
+                                <button test='play-button' class="btn btn-success" type='submit'>Play</button>
                             </td>
                     </form>
                     </tr>

@@ -71,10 +71,11 @@
                                 <form method='POST' action='/register'>
                                     <div class="col mb-4">
                                         <label for='name'>Player Name:</label>
-                                        <input type='text' id='name' name='name'>
+                                        <input type='text' id='name' name='name' test='register-name'>
                                     </div>
                                     <div class="float-right">
-                                        <button class="btn btn-success" type='submit'>Register and Play</button>
+                                        <button test="register-button" class="btn btn-success" type='submit'>Register and
+                                            Play</button>
                                     </div>
                                 </form>
                             </div>

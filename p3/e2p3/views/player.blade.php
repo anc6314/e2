@@ -53,7 +53,8 @@
                                             </tr>
                                             @foreach ($games as $game)
                                                 <tr>
-                                                    <td> <a href="/game?id={{ $game['id'] }}"> {{ $game['id'] }} </td>
+                                                    <td> <a test='game-link' href="/game?id={{ $game['id'] }}">
+                                                            {{ $game['id'] }} </td>
                                                     <td> {{ $game['status'] }} </td>
                                                     <td> {{ $game['score'] }} </td>
                                                 </tr>
