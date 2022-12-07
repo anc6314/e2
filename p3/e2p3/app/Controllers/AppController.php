@@ -206,6 +206,7 @@ class AppController extends Controller
         # these vars are stored in the session and not DB
         $game_id        = $this->app->sessionGet('game_id');
         $round          = $this->app->sessionGet('round');
+        $user_id        = $this->app->sessionGet('user_id');
         $player1_cards  = $this->app->sessionGet('player1_cards');
         $computer_cards = $this->app->sessionGet('computer_cards');
 
@@ -294,12 +295,13 @@ class AppController extends Controller
             $score = count($player1_cards) - count($computer_cards);
 
             # update DB with game info
-            $sql = 'UPDATE games SET status = :status WHERE id = :id';
+            $sql = 'UPDATE games SET status = :status, score = :score, user_id = :user_id WHERE id = :id';
 
             $data = [
                 'id'        => $game_id,
                 'status'    => $status,
                 'score'     => $score,
+                'user_id'   => $user_id,
             ];
 
             $this->app->db()->run($sql, $data);
@@ -310,6 +312,8 @@ class AppController extends Controller
             $player1_cards  = $this->app->sessionGet('player1_cards');
             $computer_cards = $this->app->sessionGet('computer_cards');
             $game_id        = $this->app->sessionGet('game_id');
+            # for simplicty sake we send user back to the home page when the game is over.
+            $this->app->redirect('/');
         }
 
 
