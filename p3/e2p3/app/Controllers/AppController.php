@@ -120,7 +120,6 @@ class AppController extends Controller
             $executed = $this->app->db()->run($sql, $data);
             $moves = $executed->fetchAll();
 
-            # https://1bestcsharp.blogspot.com/2016/07/php-mysql-pdo-using-foreach-loop.html
             foreach ($moves as $move) {
                 $value = $move['count(*)'];
                 if ($move['winner'] == "Computer") {
@@ -144,8 +143,6 @@ class AppController extends Controller
             $computer_cards = $this->app->sessionGet('computer_cards');
 
             # pull the winner and winner class from the last row
-            # https://www.geeksforgeeks.org/php-end-function/
-
             $winner       = end($results)['winner'];
             $winner_class = end($results)['winner_class'];
         }
@@ -285,8 +282,6 @@ class AppController extends Controller
             $score = count($player1_cards) - count($computer_cards);
 
             # update DB with game info
-            # https://www.tutorialspoint.com/mysql/mysql-update-query.htm
-
             $sql = 'UPDATE games SET status = :status WHERE id = :id';
 
             $data = [
@@ -310,7 +305,6 @@ class AppController extends Controller
         $executed = $this->app->db()->run($sql, $data);
         $moves = $executed->fetchAll();
 
-        # https://1bestcsharp.blogspot.com/2016/07/php-mysql-pdo-using-foreach-loop.html
         foreach ($moves as $move) {
             $value = $move['count(*)'];
             if ($move['winner'] == "Computer") {
@@ -402,9 +396,6 @@ class AppController extends Controller
             $this->app->sessionSet('games', $games);
 
             # Calc some basic stats
-
-            # https://stackoverflow.com/questions/37458399/count-all-rows-by-status
-
             $sql = 'SELECT status, count(*) FROM games WHERE user_id = :user_id GROUP BY status';
             $data = ['user_id' => $user_id];
 
@@ -436,7 +427,6 @@ class AppController extends Controller
 
         $result = $this->app->db()->findByColumn('moves', 'id', '=', $move_id);
 
-        # https://www.geeksforgeeks.org/how-to-check-whether-an-array-is-empty-using-php/
         if (count($result) == 0) {
             $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
         }
@@ -444,7 +434,6 @@ class AppController extends Controller
         # make card objects to match this round so we can display them on the page
         # Note: this code assumes the DB has valid data; in production we would want better error handling
         # We would also likely move some of this logic to the card class to meet separation of concerns / dry code
-        #https://www.w3schools.com/php/func_string_explode.asp
 
         $value              = Card::getValueFromDisplay(explode(" ", $result[0]['player_card'])[0]);
         $suit               = explode(" ", $result[0]['player_card'])[1];
