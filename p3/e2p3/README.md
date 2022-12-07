@@ -11,11 +11,17 @@
 
 ## Outside resources
 <https://1bestcsharp.blogspot.com/2016/07/php-mysql-pdo-using-foreach-loop.html>
+
 <https://www.geeksforgeeks.org/php-end-function/>
+
 <https://www.tutorialspoint.com/mysql/mysql-update-query.htm>
+
 <https://1bestcsharp.blogspot.com/2016/07/php-mysql-pdo-using-foreach-loop.html>
+
 <https://stackoverflow.com/questions/37458399/count-all-rows-by-status>
+
 <https://www.geeksforgeeks.org/how-to-check-whether-an-array-is-empty-using-php/>
+
 <https://www.w3schools.com/php/func_string_explode.asp>
 
 ## Notes for instructor
