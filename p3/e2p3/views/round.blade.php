@@ -62,7 +62,7 @@
             <div class="col">
             </div>
             <div class="col-8">
-                <h2>History</h2>
+                <h2>Results</h2>
                 <table class="table table-hover">
                     <tr class="table-primary">
                         <th scope="col">Round #</th>

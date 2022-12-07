@@ -437,12 +437,13 @@ class AppController extends Controller
         $result = $this->app->db()->findByColumn('moves', 'id', '=', $move_id);
 
         # https://www.geeksforgeeks.org/how-to-check-whether-an-array-is-empty-using-php/
-        if (is_null($result)) {
+        if (count($result) == 0) {
             $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
         }
 
         # make card objects to match this round so we can display them on the page
-
+        # Note: this code assumes the DB has valid data; in production we would want better error handling
+        # We would also likely move some of this logic to the card class to meet separation of concerns / dry code
         #https://www.w3schools.com/php/func_string_explode.asp
 
         $value              = Card::getValueFromDisplay(explode(" ", $result[0]['player_card'])[0]);
