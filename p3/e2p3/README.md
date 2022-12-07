@@ -24,6 +24,8 @@
 
 <https://www.w3schools.com/php/func_string_explode.asp>
 
+<https://stackoverflow.com/questions/40406418/cannot-declare-class-controller-because-the-name-is-already-in-use>
+
 ## Notes for instructor
 The game has already been seeded with players.  You can use their name to 'login' (w/o password) as them or you can create your own player.
 

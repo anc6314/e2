@@ -162,6 +162,8 @@ class AppController extends Controller
         $player1_card_path    = (is_null($player1_cards[0])) ? "" : $player1_cards[0]->getImagePath();
         $computer_card_path   = (is_null($computer_cards[0])) ? "" : $computer_cards[0]->getImagePath();
 
+        $player1_card_count = count($player1_cards);
+
         $data = [
             'game_id'               => $game_id,
             'round'                 => $round,
@@ -175,6 +177,7 @@ class AppController extends Controller
             'tie_percent'           => $tie_percent,
             'player1_card_path'     => $player1_card_path,
             'computer_card_path'    => $computer_card_path,
+            'player1_card_count'    => $player1_card_count,
             'results'               => $results,
 
         ];
@@ -301,45 +304,56 @@ class AppController extends Controller
 
             $this->app->db()->run($sql, $data);
 
-            # start a new game
+            # start a new game automatically
             $this->new();
             # new function will set the cards and game id - so lets read them back in
             $player1_cards  = $this->app->sessionGet('player1_cards');
             $computer_cards = $this->app->sessionGet('computer_cards');
             $game_id        = $this->app->sessionGet('game_id');
-            # for simplicty sake we send user back to the home page when the game is over.
-            $this->app->redirect('/');
-        }
 
+            # reset stats
+            $winner         = "";
+            $winner_class   = "";
 
-        # *  Step 7: Calc stats
+            $wins           = 0;
+            $ties           = 0;
+            $losses         = 0;
 
-        $sql = 'SELECT winner, count(*) FROM moves WHERE game_id = :game_id GROUP BY winner';
-        $data = ['game_id' => $game_id];
+            $win_percent     = 0;
+            $loss_percent    = 0;
+            $tie_percent     = 0;
+        } else {
+            # *  Step 7: Calc stats
 
-        $executed = $this->app->db()->run($sql, $data);
-        $moves = $executed->fetchAll();
+            $sql = 'SELECT winner, count(*) FROM moves WHERE game_id = :game_id GROUP BY winner';
+            $data = ['game_id' => $game_id];
 
-        foreach ($moves as $move) {
-            $value = $move['count(*)'];
-            if ($move['winner'] == "Computer") {
-                $losses = $value;
-            } else if ($move['winner'] == "You") {
-                $wins = $value;
-            } else if ($move['winner'] == "Tie") {
-                $ties = $value;
+            $executed = $this->app->db()->run($sql, $data);
+            $moves = $executed->fetchAll();
+
+            foreach ($moves as $move) {
+                $value = $move['count(*)'];
+                if ($move['winner'] == "Computer") {
+                    $losses = $value;
+                } elseif ($move['winner'] == "You") {
+                    $wins = $value;
+                } elseif ($move['winner'] == "Tie") {
+                    $ties = $value;
+                }
             }
+
+            $win_percent     = round(($wins / $round) * 100, 2);
+            $loss_percent    = round(($losses / $round) * 100, 2);
+            $tie_percent     = round(($ties / $round) * 100, 2);
+
+            $results = $this->app->db()->findByColumn('moves', 'game_id', '=', $game_id);
         }
-
-        $win_percent     = round(($wins / $round) * 100, 2);
-        $loss_percent    = round(($losses / $round) * 100, 2);
-        $tie_percent     = round(($ties / $round) * 100, 2);
-
-        $results = $this->app->db()->findByColumn('moves', 'game_id', '=', $game_id);
 
         # Step 8: send user back to the play page with updated data
         $player1_card_path    = $player1_cards[0]->getImagePath();
         $computer_card_path   = $computer_cards[0]->getImagePath();
+
+        $player1_card_count = count($player1_cards);
 
         $data = [
             'game_id'               => $game_id,
@@ -353,6 +367,7 @@ class AppController extends Controller
             'tie_percent'           => $tie_percent,
             'player1_card_path'     => $player1_card_path,
             'computer_card_path'    => $computer_card_path,
+            'player1_card_count'    => $player1_card_count,
             'results'               => $results,
 
         ];

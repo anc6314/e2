@@ -68,6 +68,7 @@
                     @endif
 
                 </div>
+                <div>You have {{ $player1_card_count }} cards remaining.</div>
 
             </div>
 
