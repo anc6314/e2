@@ -441,19 +441,19 @@ class AppController extends Controller
             $this->app->redirect('/'); # send them back to the home page; could add in error message in the future
         }
 
-        # make card objects to match this round so we can display them
+        # make card objects to match this round so we can display them on the page
 
-        #result[0]['player_card']
-        #result[0]['computer_card']
+        #https://www.w3schools.com/php/func_string_explode.asp
 
-        #$player1_card = new Card($suit, $i);
-        #$computer_card = new Card($suit, $i);
+        $value              = Card::getValueFromDisplay(explode(" ", $result[0]['player_card'])[0]);
+        $suit               = explode(" ", $result[0]['player_card'])[1];
+        $player1_card       = new Card(Suit::from($suit), $value);
+        $player1_card_path  = $player1_card->getImagePath();
 
-        #$player1_card_path    = $player1_card->getImagePath();
-        #$computer_card_path   = $computer_card->getImagePath();
-
-        $player1_card_path    = "";
-        $computer_card_path   = "";
+        $value               = Card::getValueFromDisplay(explode(" ", $result[0]['computer_card'])[0]);
+        $suit                = explode(" ", $result[0]['computer_card'])[1];
+        $computer_card       = new Card(Suit::from($suit), $value);
+        $computer_card_path  = $computer_card->getImagePath();
 
         $data = [
             'result'              =>  $result[0],

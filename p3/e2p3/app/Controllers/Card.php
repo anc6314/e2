@@ -83,4 +83,26 @@ class Card
                 return "Blackcard";
         }
     }
+
+
+    # https://www.w3schools.com/php/php_oop_static_methods.asp
+    public static function getValueFromDisplay($display) # translate letter to number for history page
+    {
+        if ($display <= 10) {
+            return $display;
+        } # 2-10 don't change
+
+        switch ($display) {
+            case "J":
+                return 11; # Jack
+            case "Q":
+                return 12; # Queen
+            case "K":
+                return 13; # King
+            case "A":
+                # Note:  Aces are always higher than Kings in this game
+                # https://www.hellaentertainment.com/blog/card-games/war/
+                return 14; # Ace
+        }
+    }
 }
