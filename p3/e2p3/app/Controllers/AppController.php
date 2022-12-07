@@ -49,6 +49,38 @@ class AppController extends Controller
         return $this->app->view('/game', $data);
     }
 
+    public function new()
+    {
+
+        # Note: in production we would move this to a game engine class; simplified here as beyond this class
+
+        # now let's setup a new game of war!
+        $deck = new Deck(true); # get a shuffled deck of cards
+
+        # Each player starts with half the deck (26 cards)
+        while ($deck->cards) {
+            $player1_cards[]  = array_shift($deck->cards); # Human player
+            $computer_cards[] = array_shift($deck->cards);
+        }
+
+        # save our card data for the game
+        $this->app->sessionSet('player1_cards',  $player1_cards);
+        $this->app->sessionSet('computer_cards', $computer_cards);
+
+        $user_id        = $this->app->sessionGet('user_id');
+
+        # save game to DB and set game ID in session
+        $data = [
+            'user_id'   => $user_id,
+            'status'    => 'playing',
+            'score'     => 0,
+        ];
+
+        $game_id = $this->app->db()->insert('games', $data);
+        $this->app->sessionSet('game_id',  $game_id);
+        $this->app->sessionSet('round', 1);
+    }
+
     public function play()
     {
         /**
@@ -60,7 +92,6 @@ class AppController extends Controller
 
         # Step 1: Read in vars: cards/user/game from session
         $round          = $this->app->sessionGet('round');
-        $user_id        = $this->app->sessionGet('user_id');
         $game_id        = $this->app->sessionGet('game_id');
 
         # default vars to prevent undefined errors in view
@@ -81,31 +112,12 @@ class AppController extends Controller
         # Is this the first round?
         if (is_null($round)) {
             # Set first round to prevent re-init of game
-            $round = 1;
-            $this->app->sessionSet('round', $round);
-
-            # now let's setup a new game of war!
-            $deck = new Deck(true); # get a shuffled deck of cards
-
-            # Each player starts with half the deck (26 cards)
-            while ($deck->cards) {
-                $player1_cards[]  = array_shift($deck->cards); # Human player
-                $computer_cards[] = array_shift($deck->cards);
-            }
-
-            # save our card data for the game
-            $this->app->sessionSet('player1_cards',  $player1_cards);
-            $this->app->sessionSet('computer_cards', $computer_cards);
-
-            # save game to DB and set game ID in session
-            $data = [
-                'user_id'   => $user_id,
-                'status'    => 'playing',
-                'score'     => 0,
-            ];
-
-            $game_id = $this->app->db()->insert('games', $data);
-            $this->app->sessionSet('game_id',  $game_id);
+            $round = 1;  # not in the new function b/c need to use the var below for output
+            $this->new();
+            # new function will set the cards - so lets read them back in
+            $player1_cards  = $this->app->sessionGet('player1_cards');
+            $computer_cards = $this->app->sessionGet('computer_cards');
+            $game_id        = $this->app->sessionGet('game_id');
         } else if ($round == 1) {
             # User has already started a game, never made any moves, and reloaded the page or wants to resume the existing game
             # load cards from the session
@@ -148,8 +160,8 @@ class AppController extends Controller
         }
 
         # Step 4: flash data and Render the play view
-        $player1_card_path    = $player1_cards[0]->getImagePath();
-        $computer_card_path   = $computer_cards[0]->getImagePath();
+        $player1_card_path    = (is_null($player1_cards[0])) ? "" : $player1_cards[0]->getImagePath();
+        $computer_card_path   = (is_null($computer_cards[0])) ? "" : $computer_cards[0]->getImagePath();
 
         $data = [
             'game_id'               => $game_id,
@@ -292,8 +304,12 @@ class AppController extends Controller
 
             $this->app->db()->run($sql, $data);
 
-            # start new game
-            // TODO: start New game here            
+            # start a new game
+            $this->new();
+            # new function will set the cards and game id - so lets read them back in
+            $player1_cards  = $this->app->sessionGet('player1_cards');
+            $computer_cards = $this->app->sessionGet('computer_cards');
+            $game_id        = $this->app->sessionGet('game_id');
         }
 
 
