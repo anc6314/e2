@@ -1,8 +1,31 @@
-# e2framework
+*Any instructions/notes in italics should be removed from the template before submitting* 
 
-*e2framework* is a rudimentary PHP framework designed for the course [DGMD E-2 Web Programming for Beginners with PHP](https://hesweb.dev/e2).
+# Project 3
++ By: Anthony Coleman
++ URL: <http://e2p3.anthonycoleman.me/>
 
-The goal of this software is to provide students an introduction to working with more advanced PHP frameworks such as Laravel and/or Symfony.
+## Graduate requirement
 
-+ __Documentation:__ <https://hesweb.dev/e2/notes/php/e2framework/installation>
-+ __Guide:__ <https://hesweb.dev/e2/notes/php/frameworks/intro>
++ [X] I have integrated testing into my application
++ [ ] I am taking this course for undergraduate credit and have opted out of integrating testing into my application
+
+## Outside resources
+<https://1bestcsharp.blogspot.com/2016/07/php-mysql-pdo-using-foreach-loop.html>
+<https://www.geeksforgeeks.org/php-end-function/>
+<https://www.tutorialspoint.com/mysql/mysql-update-query.htm>
+<https://1bestcsharp.blogspot.com/2016/07/php-mysql-pdo-using-foreach-loop.html>
+<https://stackoverflow.com/questions/37458399/count-all-rows-by-status>
+<https://www.geeksforgeeks.org/how-to-check-whether-an-array-is-empty-using-php/>
+<https://www.w3schools.com/php/func_string_explode.asp>
+
+## Notes for instructor
+*any notes for me to refer to while grading; if none, omit this section*
+
+## Codeception testing output
+```
+Codeception PHP Testing Framework v4.1.22
+Powered by PHPUnit 9.5.10 by Sebastian Bergmann and contributors.
+
+Acceptance Tests (7) ---------------------------------------------------------------------------------------------------------
+
+```
