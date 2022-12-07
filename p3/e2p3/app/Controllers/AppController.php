@@ -97,7 +97,6 @@ class AppController extends Controller
         # default vars to prevent undefined errors in view
         $winner         = "";
         $winner_class   = "";
-        $winner_game    = "";
 
         $wins           = 0;
         $ties           = 0;
@@ -167,7 +166,6 @@ class AppController extends Controller
             'game_id'               => $game_id,
             'round'                 => $round,
             'winner'                => $winner,
-            '$winner_game'          => $winner_game,
             'winner_class'          => $winner_class,
             'wins'                  => $wins,
             'ties'                  => $ties,
@@ -282,13 +280,10 @@ class AppController extends Controller
 
         if (count($computer_cards) == 0 || count($player1_cards) == 0) {
             if (count($computer_cards) == 0 && count($player1_cards) == 0) {
-                $winner_game = "Tie";
                 $status = 'tie';
             } else if (count($computer_cards) == 0) {
-                $winner_game = "You";
                 $status = 'won';
             } else if (count($player1_cards) == 0) {
-                $winner_game = "Computer";
                 $status = 'lost';
             }
 
@@ -349,7 +344,6 @@ class AppController extends Controller
         $data = [
             'game_id'               => $game_id,
             'winner'                => $winner,
-            'winner_game'           => $winner_game,
             'winner_class'          => $winner_class,
             'wins'                  => $wins,
             'ties'                  => $ties,

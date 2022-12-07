@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-require("Card.php"); # Note: requires php 8.1 or higher for enum support
+use App\Controllers\Card; # Note: requires php 8.1 or higher for enum support
 
 class Deck
 {

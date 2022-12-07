@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-require("Suit.php"); # Note: requires php 8.1 or higher for enum support
+use App\Controllers\Suit; # Note: requires php 8.1 or higher for enum support
 
 class Card
 {
