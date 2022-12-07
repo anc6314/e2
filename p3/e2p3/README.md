@@ -25,7 +25,7 @@
 <https://www.w3schools.com/php/func_string_explode.asp>
 
 ## Notes for instructor
-*any notes for me to refer to while grading; if none, omit this section*
+The game has already been seeded with players.  You can use their name to 'login' (w/o password) as them or you can create your own player.
 
 ## Codeception testing output
 ```
