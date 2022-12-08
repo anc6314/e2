@@ -1,5 +1,3 @@
-*Any instructions/notes in italics should be removed from the template before submitting* 
-
 # Project 3
 + By: Anthony Coleman
 + URL: <http://e2p3.anthonycoleman.me/>
