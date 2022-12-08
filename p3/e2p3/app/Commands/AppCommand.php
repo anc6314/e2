@@ -102,6 +102,9 @@ class AppCommand extends Command
 
             # Let's play war!
             while (sizeof($player_cards) > 0 && sizeof($computer_cards) > 0) {
+
+                dump('Simulating game ' . $game['id'] . ' move ' . $round);
+
                 $player_card = $player_cards[0];
                 $computer_card = $computer_cards[0];
 
