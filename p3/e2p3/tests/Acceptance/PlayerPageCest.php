@@ -19,6 +19,8 @@ class PlayerPageCest
         $I->see('Games Played');
 
         $gameCount = count($I->grabMultiple('[test=game-link]'));
-        #$I->assertGreaterThanOrEqual(3, $gameCount);
+        $I->comment('Found games: ' . $gameCount);
+
+        $I->assertGreaterThanOrEqual(3, $gameCount);
     }
 }
