@@ -7,6 +7,7 @@
 actor: AcceptanceTester
 modules:
     enabled:
+        - Asserts
         - PhpBrowser:
             url: http://e2p3.anthonycoleman.me/
 step_decorators: ~
