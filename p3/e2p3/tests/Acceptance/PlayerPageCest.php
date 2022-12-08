@@ -10,7 +10,7 @@ class PlayerPageCest
 
     public function testPlayerDetail(AcceptanceTester $I)
     {
-        # assume there is a player #1 from seeding
+        # assume there is a player #1 from seeding since we seed 5 users
         $I->amOnPage('/player?id=1');
 
         # Assert the correct title is set on the page
@@ -21,6 +21,7 @@ class PlayerPageCest
         $gameCount = count($I->grabMultiple('[test=game-link]'));
         $I->comment('Found games: ' . $gameCount);
 
-        $I->assertGreaterThanOrEqual(3, $gameCount);
+        # We seed 1 - 3 games randomly, so we should have at least one
+        $I->assertGreaterThanOrEqual(1, $gameCount);
     }
 }

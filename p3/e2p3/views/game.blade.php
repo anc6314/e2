@@ -46,7 +46,7 @@
                         @foreach ($moves as $move)
                             <tr class="table-{{ $move['winner_class'] }} black">
                                 <td>
-                                    <a href="/round?id={{ $move['id'] }}">
+                                    <a test='move-link' href="/round?id={{ $move['id'] }}">
                                         {{ $move['number'] }}
                                     </a>
                                 </td>

@@ -40,12 +40,12 @@
                     <tr>
                         <td>
                             <span>
-                                <img src="{{ $player1_card_path }}" />
+                                <img test='player-card' src="{{ $player1_card_path }}" />
                             </span>
                         </td>
                         <td>
                             <span>
-                                <img src="{{ $computer_card_path }}" />
+                                <img test='computer-card' src="{{ $computer_card_path }}" />
                             </span>
                         </td>
                     </tr>
@@ -74,7 +74,7 @@
                         <th scope="col">Computer cards left</th>
                     </tr>
                     <tr class="table-{{ $result['winner_class'] }} black">
-                        <td> {{ $result['number'] }}</td>
+                        <td> <span test='move-number'>{{ $result['number'] }}<span></td>
                         <td>
                             <span class={{ $result['player_card_class'] }}>
                                 {{ $result['player_card'] }}
